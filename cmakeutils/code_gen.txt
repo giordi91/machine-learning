@@ -1,0 +1,10 @@
+cmake_minimum_required(VERSION 2.6)
+
+function(generate_opencl_diassembly current_project_name file_name)
+    if(${DUMP_KERNEL_ASSEMBLY} STREQUAL "ON")
+        add_custom_target(${current_project_name}_assembly ALL 
+                          COMMAND clang++ -target amdgcn-amd-amdhsa-opencl -c -S -x cl -O3 ${file_name} )
+        add_custom_target(${current_project_name}_llvm_ir ALL 
+                          COMMAND clang++ -emit-llvm -c -S -x cl -O3 ${file_name} )
+    endif()
+endfunction()

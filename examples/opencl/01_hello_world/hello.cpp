@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
  
+#ifndef USE_OPENCL_2_0
+#define CL_USE_DEPRECATED_OPENCL_1_2_APIS
+#endif
+
 #ifdef __APPLE__
 #include <OpenCL/opencl.h>
 #else
