@@ -14,10 +14,17 @@ project(01_cl_hello_world)
     if(${USE_OPENCL_2_0} STREQUAL "ON")
     add_definitions(-DUSE_OPENCL_2_0)
     endif()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -pedantic -Wextra -m64")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -pedantic -Wextra -m64")
 
     add_executable(${PROJECT_NAME} hello.cpp )
     set (CMAKE_CXX_STANDARD 11)
 
 	copy_kernel(hello.cl)
     target_link_libraries(${PROJECT_NAME} OpenCL)
+
+    if(CLANG_TIDY_EXE)
+	  set_target_properties(
+			  ${PROJECT_NAME}  PROPERTIES
+				  CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
+					)
+	endif()

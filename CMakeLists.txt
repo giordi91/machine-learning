@@ -1,8 +1,21 @@
 cmake_minimum_required(VERSION 3.6.0)
 
+#preventing in source build
 if ( ${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR} )
         message( FATAL_ERROR "In-source builds not allowed. Please make a new directory (called a build directory) and run CMake from there. You may need to remove CMakeCache.txt." )
     endif()
+
+find_program(
+	CLANG_TIDY_EXE
+	NAMES "clang-tidy"
+	DOC "Path to clang-tidy executable"
+)
+if(NOT CLANG_TIDY_EXE)
+	message(STATUS "clang-tidy not found.")
+else()
+	message(STATUS "clang-tidy found: ${CLANG_TIDY_EXE}")
+	set(DO_CLANG_TIDY "${CLANG_TIDY_EXE}" "-checks=*,-clang-analyzer-alpha.*")
+endif()
 
 #compile database
 set( CMAKE_EXPORT_COMPILE_COMMANDS ON )

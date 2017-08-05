@@ -1,5 +1,7 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
+#include <iostream>
+#include <memory>
 
 #define MEM_SIZE (128)
 #define MAX_SOURCE_SIZE (0x100000)
@@ -24,17 +26,17 @@ int main() {
 
   FILE *fp = nullptr;
   char fileName[] = "./hello.cl";
-  char *source_str;
+  //char *source_str;
   size_t source_size;
 
   // Load the source code containing the kernel
-  fp = fopen(fileName, "r");
-  if (!fp) {
-    fprintf(stderr, "Failed to load kernel.\n");
+  fp = fopen(static_cast<char*>(fileName), "r");
+  if (fp == nullptr) {
+    std::cerr<< "Failed to load kernel."<<std::endl;
     exit(1);
   }
-  source_str = (char *)malloc(MAX_SOURCE_SIZE);
-  source_size = fread(source_str, 1, MAX_SOURCE_SIZE, fp);
+  auto source_str = std::make_unique<char[]>(MAX_SOURCE_SIZE);
+  source_size = fread(source_str.get(), 1, MAX_SOURCE_SIZE, fp);
   fclose(fp);
 
   // Get Platform and Device Info
@@ -46,15 +48,16 @@ int main() {
   context = clCreateContext(nullptr, 1, &device_id, nullptr, nullptr, &ret);
 
   // Create Command Queue
-  command_queue = clCreateCommandQueueWrap(context, device_id, 0, &ret);
+  command_queue = clCreateCommandQueueWrap(context, device_id, nullptr, &ret);
 
   // Create Memory Buffer
   memobj = clCreateBuffer(context, CL_MEM_READ_WRITE, MEM_SIZE * sizeof(char),
                           nullptr, &ret);
 
   // Create Kernel Program from the source
-  program = clCreateProgramWithSource(context, 1, (const char **)&source_str,
-                                      (const size_t *)&source_size, &ret);
+  const char* raw_source_ptr = source_str.get();
+  program = clCreateProgramWithSource(context, 1, &raw_source_ptr,
+                                      static_cast<const size_t *>(&source_size), &ret);
 
   // Build Kernel Program
   ret = clBuildProgram(program, 1, &device_id, nullptr, nullptr, nullptr);
@@ -63,7 +66,7 @@ int main() {
   kernel = clCreateKernel(program, "hello", &ret);
 
   // Set OpenCL Kernel Parameters
-  ret = clSetKernelArg(kernel, 0, sizeof(cl_mem), (void *)&memobj);
+  ret = clSetKernelArg(kernel, 0, sizeof(cl_mem), static_cast<void *>(&memobj));
 
   // Execute OpenCL Kernel
   ret = clEnqueueTaskWrap(command_queue, kernel, 0, nullptr, nullptr);
@@ -71,10 +74,10 @@ int main() {
   // Copy results from the memory buffer
   ret =
       clEnqueueReadBuffer(command_queue, memobj, CL_TRUE, 0,
-                          MEM_SIZE * sizeof(char), string, 0, nullptr, nullptr);
+                          MEM_SIZE * sizeof(char), static_cast<char*>(string), 0, nullptr, nullptr);
 
   // Display Result
-  puts(string);
+  std::cout<<static_cast<char*>(string)<<std::endl;;
 
   // Finalization
   ret = clFlush(command_queue);
@@ -85,7 +88,6 @@ int main() {
   ret = clReleaseCommandQueue(command_queue);
   ret = clReleaseContext(context);
 
-  free(source_str);
 
   return 0;
 }
