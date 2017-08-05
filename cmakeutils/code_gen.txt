@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 2.6)
 
+#this functions generates assembly and clang IR out of a CL kernel 
 function(generate_opencl_diassembly current_project_name file_name)
     if(${DUMP_KERNEL_ASSEMBLY} STREQUAL "ON")
         add_custom_target(${current_project_name}_assembly ALL 
@@ -7,4 +7,12 @@ function(generate_opencl_diassembly current_project_name file_name)
         add_custom_target(${current_project_name}_llvm_ir ALL 
                           COMMAND clang++ -emit-llvm -c -S -x cl -O3 ${file_name} )
     endif()
+endfunction()
+
+
+#this function is used to copy a kernel to the current being built executable folder
+function(copy_kernel file_name)
+    add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy
+                   ${CMAKE_CURRENT_SOURCE_DIR}/${file_name} $<TARGET_FILE_DIR:${PROJECT_NAME}>)
 endfunction()

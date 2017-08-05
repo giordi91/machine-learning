@@ -6,8 +6,6 @@ cmake_minimum_required(VERSION 3.6)
   
 project(01_cl_hello_world)   
 
-
-
     file(GLOB SOURCE_FILES "*.cpp" "*.h")
     find_package(OpenCL REQUIRED) 
     generate_opencl_diassembly(${PROJECT_NAME} hello.cl)
@@ -16,11 +14,10 @@ project(01_cl_hello_world)
     if(${USE_OPENCL_2_0} STREQUAL "ON")
     add_definitions(-DUSE_OPENCL_2_0)
     endif()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -pedantic -Wextra")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -pedantic -Wextra -m64")
 
     add_executable(${PROJECT_NAME} hello.cpp )
     set (CMAKE_CXX_STANDARD 11)
-    add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E copy
-                   ${CMAKE_CURRENT_SOURCE_DIR}/hello.cl $<TARGET_FILE_DIR:${PROJECT_NAME}>)
+
+	copy_kernel(hello.cl)
     target_link_libraries(${PROJECT_NAME} OpenCL)
