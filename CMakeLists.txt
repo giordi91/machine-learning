@@ -54,3 +54,5 @@ MESSAGE( STATUS "USE_OPENCL_2_0:               " ${USE_OPENCL_2_0})
 if(${BUILD_OPENCL} STREQUAL "ON")
     add_subdirectory(examples/opencl/01_hello_world)
 endif()
+
+add_subdirectory(examples/cpu/01_linear_regression)

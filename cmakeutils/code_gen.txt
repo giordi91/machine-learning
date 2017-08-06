@@ -16,3 +16,12 @@ function(copy_kernel file_name)
                    COMMAND ${CMAKE_COMMAND} -E copy
                    ${CMAKE_CURRENT_SOURCE_DIR}/${file_name} $<TARGET_FILE_DIR:${PROJECT_NAME}>)
 endfunction()
+
+function(set_visual_studio_working_directory_if_needed )
+	if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+		 if ("${CMAKE_BUILD_TYPE}" STREQUAL "")
+		 set(CMAKE_BUILD_TYPE "Debug")
+		 endif()
+		 set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}")
+	endif()
+endfunction()
