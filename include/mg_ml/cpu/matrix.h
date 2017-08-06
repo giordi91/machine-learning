@@ -11,6 +11,10 @@ struct Matrix {
 };
 
 void mult_matrix( const Matrix& m1, const Matrix& m2, Matrix& out);
+void matrix_mult_transpose( const Matrix& m1, const Matrix& m2, Matrix& out);
+void matrix_sub( const Matrix& m1, const Matrix& m2, Matrix& out);
+void matrix_ew_mult( const Matrix& m1, const Matrix& m2, Matrix& out);
+float matrix_accumulate( const Matrix& m1);
 
 }//namespace cpu 
 }//namespcae core

@@ -36,6 +36,4 @@ project(01_cl_hello_world)
     target_link_libraries(${PROJECT_NAME} ${OpenCL_LIBRARIES} )
 
 	#enabling clang tidy
-    if(CLANG_TIDY_EXE)
-	  set_target_properties(${PROJECT_NAME}  PROPERTIES CXX_CLANG_TIDY "${DO_CLANG_TIDY}")
-	endif()
+    enable_clang_tidy_for_project()
