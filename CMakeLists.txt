@@ -23,14 +23,33 @@ set( CMAKE_EXPORT_COMPILE_COMMANDS ON )
 #including utils function, this will cascade to all subsequent included cmakes
 include (cmakeutils/code_gen.txt)
 
+
+
+
+
 #options
 option(DUMP_KERNEL_ASSEMBLY "Wheter or not to generate readable assembly code from kernels" ON)
 option(BUILD_OPENCL "Wheter or not to build the opencl side of code" ON)
 option(USE_OPENCL_2_0 "Wheter or not to use opencl 2.0" OFF)
 
+#check the compiler
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+  # using Clang
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+  # using GCC
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
+  # using Intel C++
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+  # using Visual Studio C++
+  #disabling build of kernel assembly for the time being
+  SET(DUMP_KERNEL_ASSEMBLY OFF CACHE BOOL "Wheter or not to generate readable assembly code from kernels" FORCE)
+endif()
+
+
 MESSAGE( STATUS "DUMP_KERNEL_ASSEMBLY:         " ${DUMP_KERNEL_ASSEMBLY})
 MESSAGE( STATUS "BUILD_OPENCL:                 " ${BUILD_OPENCL})
 MESSAGE( STATUS "USE_OPENCL_2_0:               " ${USE_OPENCL_2_0})
+
 #adding opencl examples
 if(${BUILD_OPENCL} STREQUAL "ON")
     add_subdirectory(examples/opencl/01_hello_world)

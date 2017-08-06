@@ -48,7 +48,7 @@ int main() {
   context = clCreateContext(nullptr, 1, &device_id, nullptr, nullptr, &ret);
 
   // Create Command Queue
-  command_queue = clCreateCommandQueueWrap(context, device_id, nullptr, &ret);
+  command_queue = clCreateCommandQueueWrap(context, device_id, 0, &ret);
 
   // Create Memory Buffer
   memobj = clCreateBuffer(context, CL_MEM_READ_WRITE, MEM_SIZE * sizeof(char),
@@ -88,6 +88,6 @@ int main() {
   ret = clReleaseCommandQueue(command_queue);
   ret = clReleaseContext(context);
 
-
+  system("pause");
   return 0;
 }

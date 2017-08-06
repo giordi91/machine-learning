@@ -10,17 +10,18 @@ project(01_cl_hello_world)
     find_package(OpenCL REQUIRED) 
     generate_opencl_diassembly(${PROJECT_NAME} hello.cl)
 
-    include_directories(${CMAKE_SOURCE_DIR}/include)
+    include_directories(${CMAKE_SOURCE_DIR}/include ${OpenCL_INCLUDE_DIRS})
+	#link_directories(${OpenCL_LIBRARIES})
     if(${USE_OPENCL_2_0} STREQUAL "ON")
     add_definitions(-DUSE_OPENCL_2_0)
     endif()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -pedantic -Wextra -m64")
+    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -pedantic -Wextra -m64")
 
     add_executable(${PROJECT_NAME} hello.cpp )
     set (CMAKE_CXX_STANDARD 11)
 
 	copy_kernel(hello.cl)
-    target_link_libraries(${PROJECT_NAME} OpenCL)
+    target_link_libraries(${PROJECT_NAME} ${OpenCL_LIBRARIES} )
 
     if(CLANG_TIDY_EXE)
 	  set_target_properties(

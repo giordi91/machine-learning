@@ -33,3 +33,9 @@
 
 #folders
 build
+Win32
+x64
+.vs
+
+#vs cmake
+CMakeSettings.json
