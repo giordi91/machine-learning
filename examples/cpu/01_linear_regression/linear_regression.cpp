@@ -1,70 +1,14 @@
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <sstream>
-#include <stdlib.h>
-#include <vector>
+
+#include <mg_ml/utils/plotting.h>
 
 //clang++ main.cpp -std=c++11 -o gnutest && ./gnutest
-struct GnuOption {
-  std::string name;
-  std::string value;
-};
-
-struct GnuFile {
-public:
-  void toString(std::ostringstream &oss) const 
-  { 
-      if(add_quotes)
-      {
-      oss << "'" << name << "'"; 
-      }
-      else
-      {
-        oss<< name;
-      }
-  }
-
-public:
-  std::vector<GnuOption> options;
-  std::string name;
-  bool add_quotes = true;
-};
-
-
-class GnuPlot {
-public:
-  explicit GnuPlot() = default;
-  void show() const;
-
-public:
-  std::string name;
-  std::vector<GnuFile> files;
-};
-
-void GnuPlot::show() const {
-  std::ostringstream oss;
-  oss << "gnuplot -e \" plot ";
-  for (const auto &f : files) {
-    f.toString(oss);
-    oss<<", ";
-  }
-
-  oss.seekp(-2,oss.cur);
- oss << "; pause -1 ;\"";
-    //,f(x) = 2 + 3*x, f(x) 
-  const std::string outs = oss.str();
-  std::cout << outs << std::endl;
-  system(outs.c_str());
-}
-
-
-inline GnuFile plot_line(float constant, float slope )
-{
-    GnuFile f;
-    f.add_quotes=false;
-    f.name = std::string("f(x) = ") + std::to_string(constant) + " +  " +std::to_string(slope)+ "*x, f(x)"; 
-    return f;
-};
+using plot::plot_line;
+using plot::GnuPlot;
+using plot::GnuFile;
 
 struct LineCoeff
 {
@@ -110,7 +54,7 @@ void write_file(const float* const x, const float* const y, uint32_t size)
 
 
 inline float cost_function(const float *const x, const float *const y,
-                            uint32_t size, LineCoeff& coeff , uint32_t feature_id)
+                            uint32_t size, const LineCoeff& coeff , uint32_t feature_id)
 {
     float error = 0.0f;
     if(feature_id !=0)
@@ -118,7 +62,6 @@ inline float cost_function(const float *const x, const float *const y,
         for( uint32_t idx =0; idx <size ; ++idx)
         {
             error += (((coeff.x0 + coeff.x1 * x[idx])  - y[idx])*x[idx]);           
-            //error+=  (partial_error * partial_error);
         }
     }
     else
@@ -126,7 +69,6 @@ inline float cost_function(const float *const x, const float *const y,
         for( uint32_t idx =0; idx <size ; ++idx)
         {
             error += ((coeff.x0 + coeff.x1 * x[idx])  - y[idx]);           
-            //error+=  (partial_error * partial_error);
         }
     
     }
@@ -134,7 +76,7 @@ inline float cost_function(const float *const x, const float *const y,
     return error;
 }
 inline float cost_function(const float *const x, const float *const y,
-                            uint32_t size, LineCoeff& coeff)
+                            uint32_t size, const LineCoeff& coeff)
 {
     float error = 0.0f;
     for (uint32_t idx = 0; idx < size; ++idx) {

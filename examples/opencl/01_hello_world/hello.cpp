@@ -6,7 +6,7 @@
 #define MEM_SIZE (128)
 #define MAX_SOURCE_SIZE (0x100000)
 
-#include <gpu/opencl/cl_wrap.h>
+#include <mg_ml/gpu/opencl/cl_wrap.h>
 
 int main() {
   cl_device_id device_id = nullptr;
