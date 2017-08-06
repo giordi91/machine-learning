@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <random>
 #include <sstream>
 
 #include <mg_ml/utils/plotting.h>
@@ -16,12 +17,6 @@ struct LineCoeff
     float x1;
 };
 
-inline float get_random_float_in_range(float min, float max) {
-  return min +
-         static_cast<float>(rand()) /
-             (static_cast<float>(RAND_MAX / (max - min)));
-}
-
 void generate_points(float* const x , float* const y, uint32_t size)
 {
     //line equation we want to gnerate points around y(x) = CONSTANT + SLOPE*x;
@@ -29,14 +24,17 @@ void generate_points(float* const x , float* const y, uint32_t size)
     const float CONSTANT = 1.0f;
     const float DELTA = 15.5f;
 
+    std::random_device rd;
+    std::mt19937 mt(rd());
+    std::uniform_real_distribution<float> dist(-DELTA, DELTA);
     for (uint32_t i = 0; i < size; ++i) {
       float tempy = CONSTANT + SLOPE *static_cast<float>(i);
-      float runtime_delta = get_random_float_in_range(-DELTA, DELTA);
+
+      float runtime_delta = dist(mt);
       float min = tempy - runtime_delta;
       float max = tempy + runtime_delta;
-      float finaly = min +
-                 static_cast<float>(rand()) /
-                     (static_cast<float>(RAND_MAX / (max - min)));
+      std::uniform_real_distribution<float> dist2(min, max);
+      float finaly = min + dist2(mt) / (static_cast<float>(RAND_MAX / (max - min)));
       x[i] = static_cast<float>(i);
       y[i] = finaly;
     }

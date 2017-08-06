@@ -14,7 +14,7 @@ if(NOT CLANG_TIDY_EXE)
 	message(STATUS "clang-tidy not found.")
 else()
 	message(STATUS "clang-tidy found: ${CLANG_TIDY_EXE}")
-	set(DO_CLANG_TIDY "${CLANG_TIDY_EXE}" "-checks=*,-clang-analyzer-alpha.*, -cppcoreguidelines-pro-bounds-array-to-pointer-decay,-cppcoreguidelines-pro-bounds-pointer-arithmetic")
+	set(DO_CLANG_TIDY "${CLANG_TIDY_EXE}" "-checks=*, -cppcoreguidelines-pro-bounds-array-to-pointer-decay,-cppcoreguidelines-pro-bounds-pointer-arithmetic")
 endif()
 
 #compile database
