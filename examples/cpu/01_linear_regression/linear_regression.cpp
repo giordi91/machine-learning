@@ -4,12 +4,15 @@
 #include <random>
 #include <sstream>
 
+#include <mg_ml/cpu/matrix.h>
 #include <mg_ml/utils/plotting.h>
 
 //clang++ main.cpp -std=c++11 -o gnutest && ./gnutest
 using plot::plot_line;
 using plot::GnuPlot;
 using plot::GnuFile;
+using core::cpu::Matrix;
+
 
 struct LineCoeff
 {
@@ -51,9 +54,11 @@ void write_file(const float* const x, const float* const y, uint32_t size)
 }
 
 
-inline float cost_function(const float *const x, const float *const y,
+inline float cost_function(const Matrix& mx,  const Matrix& my,
                             uint32_t size, const LineCoeff& coeff , uint32_t feature_id)
 {
+    const float *const x = mx.data;
+    const float *const y = my.data;
     float error = 0.0f;
     if(feature_id !=0)
     {
@@ -73,9 +78,11 @@ inline float cost_function(const float *const x, const float *const y,
 
     return error;
 }
-inline float cost_function(const float *const x, const float *const y,
+inline float cost_function(const Matrix& mx,  const Matrix& my,
                             uint32_t size, const LineCoeff& coeff)
 {
+    const float *const x = mx.data;
+    const float *const y = my.data;
     float error = 0.0f;
     for (uint32_t idx = 0; idx < size; ++idx) {
       float partial_error = ((coeff.x0 + coeff.x1 * x[idx]) - y[idx]);
@@ -85,31 +92,28 @@ inline float cost_function(const float *const x, const float *const y,
     return  (1.0f / (float(size) *2.0f) ) *error;
 }
 
-LineCoeff linear_regression(const float *const x, const float *const y,
+LineCoeff linear_regression(const Matrix& mx,  const Matrix& my,
                             uint32_t size, float descent_step, float tollerance) {
   LineCoeff result{0.0f, 0.0f};
   float runtime_tollerance = 1000000.0f;
   float learning_c = descent_step * (1.0f/float(size));
   int i = 0;
-  float previous = cost_function(x,y,size,result);
-  std::cout<<"initial guess "<<cost_function(x,y,size,result)<<std::endl;
+  float previous = cost_function(mx,my,size,result);
+  //std::cout<<"initial guess "<<cost_function(x,y,size,result)<<std::endl;
   while (runtime_tollerance > tollerance) {
   //for (uint32_t i = 0; i < 10000000; ++i) {
-    float cost_d0 = cost_function(x, y, size, result,0);
-    float cost_d1 = cost_function(x, y, size, result,1);
+    float cost_d0 = cost_function(mx, my, size, result,0);
+    float cost_d1 = cost_function(mx, my, size, result,1);
 
     result.x0 -= (learning_c* cost_d0);
     result.x1 -= (learning_c* cost_d1);
-    float current_cost = cost_function(x,y,size,result);
+    float current_cost = cost_function(mx,my,size,result);
     runtime_tollerance =  (previous - current_cost);
     if (runtime_tollerance < 0)
     {
         runtime_tollerance *= -1.0f; 
     }
     previous = current_cost;
-    //previous = runtime_tollerance;
-    //std::cout<<current_cost<<std::endl;
-    //std::cout<<"cost at iteration "<<i<<": "<<runtime_tollerance<<std::endl;
     ++i;
   }
   std::cout<<"converge in " << i <<" iterations "<<std::endl;
@@ -123,10 +127,14 @@ int main() {
   const float DESCENT_STEP= 0.00000001f; 
   float x[SIZE];
   float y[SIZE];
+  Matrix mx{x,SIZE,1};
+  Matrix my{y,SIZE,1};
+  Matrix out{y,SIZE,1};
+  
 
-  generate_points(x, y, SIZE);
+  generate_points(mx.data, my.data, SIZE);
   write_file(x, y, SIZE);
-  auto lineCoeff = linear_regression(x, y, SIZE, DESCENT_STEP, TOLLERANCE);
+  auto lineCoeff = linear_regression(mx, my, SIZE, DESCENT_STEP, TOLLERANCE);
 
   GnuPlot plot;
   plot.files.resize(2);
@@ -135,5 +143,4 @@ int main() {
   std::cout<<lineCoeff.x0 << " "<<lineCoeff.x1<<std::endl;
   plot.files[1] = plot_line(lineCoeff.x0, lineCoeff.x1); 
   plot.show();
-
 }

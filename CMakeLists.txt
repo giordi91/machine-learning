@@ -5,23 +5,14 @@ if ( ${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR} )
         message( FATAL_ERROR "In-source builds not allowed. Please make a new directory (called a build directory) and run CMake from there. You may need to remove CMakeCache.txt." )
     endif()
 
-find_program(
-	CLANG_TIDY_EXE
-	NAMES "clang-tidy"
-	DOC "Path to clang-tidy executable"
-)
-if(NOT CLANG_TIDY_EXE)
-	message(STATUS "clang-tidy not found.")
-else()
-	message(STATUS "clang-tidy found: ${CLANG_TIDY_EXE}")
-	set(DO_CLANG_TIDY "${CLANG_TIDY_EXE}" "-checks=*, -cppcoreguidelines-pro-bounds-array-to-pointer-decay,-cppcoreguidelines-pro-bounds-pointer-arithmetic")
-endif()
-
 #compile database
 set( CMAKE_EXPORT_COMPILE_COMMANDS ON )
 
 #including utils function, this will cascade to all subsequent included cmakes
 include (cmakeutils/code_gen.txt)
+
+#setupping clang tidy
+init_clang_tidy()
 
 #options
 option(DUMP_KERNEL_ASSEMBLY "Wheter or not to generate readable assembly code from kernels" ON)
@@ -45,6 +36,9 @@ endif()
 MESSAGE( STATUS "DUMP_KERNEL_ASSEMBLY:         " ${DUMP_KERNEL_ASSEMBLY})
 MESSAGE( STATUS "BUILD_OPENCL:                 " ${BUILD_OPENCL})
 MESSAGE( STATUS "USE_OPENCL_2_0:               " ${USE_OPENCL_2_0})
+
+#adding cpu core
+add_subdirectory(src/cpu)
 
 #adding opencl examples
 if(${BUILD_OPENCL} STREQUAL "ON")

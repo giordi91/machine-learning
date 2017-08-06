@@ -25,3 +25,26 @@ function(set_visual_studio_working_directory_if_needed )
 		 set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}")
 	endif()
 endfunction()
+
+function(init_clang_tidy )
+#lets find clang-tidy
+find_program(
+	CLANG_TIDY_EXE
+	NAMES "clang-tidy"
+	DOC "Path to clang-tidy executable"
+)
+if(NOT CLANG_TIDY_EXE)
+	message(STATUS "clang-tidy not found.")
+else()
+	message(STATUS "clang-tidy found: ${CLANG_TIDY_EXE}")
+	set(DO_CLANG_TIDY "${CLANG_TIDY_EXE}" "-checks=*, -cppcoreguidelines-pro-bounds-array-to-pointer-decay,-cppcoreguidelines-pro-bounds-pointer-arithmetic")
+endif()
+endfunction()
+
+function(enable_clang_tidy_for_project)
+#enabling clang tidy
+if(CLANG_TIDY_EXE)
+  set_target_properties(${PROJECT_NAME}  PROPERTIES CXX_CLANG_TIDY "${DO_CLANG_TIDY}")
+endif()
+endfunction()
+

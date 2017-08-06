@@ -4,12 +4,10 @@ cmake_minimum_required(VERSION 3.6)
 
 #clang++ -target amdgcn-amd-amdhsa-opencl  -x cl hello.cl -c -S
   
-project(01_linear_regression)   
+project(mg_ml_cpu)   
 
     file(GLOB SOURCE_FILES "*.cpp" "*.h")
     include_directories(${CMAKE_SOURCE_DIR}/include ${OpenCL_INCLUDE_DIRS})
-	
-
     
 	#defining standard compiling flags
 	if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
@@ -19,8 +17,7 @@ project(01_linear_regression)
     endif()
 
 	#adding the executable
-    add_executable(${PROJECT_NAME} linear_regression.cpp )
-    target_link_libraries(${PROJECT_NAME} mg_ml_cpu )
+    add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES} )
 
 	#enabling clang tidy
     enable_clang_tidy_for_project()
