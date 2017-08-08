@@ -56,7 +56,7 @@ void write_file(const float* const x, const float* const y, uint32_t size)
 }
 
 
-inline float cost_function(const Matrix& mx,  const Matrix& my,
+inline float cost_function_grad(const Matrix& mx,  const Matrix& my,
                             uint32_t size, const Matrix& coeff , uint32_t feature_id)
 {
     const float *const x = mx.data;
@@ -113,8 +113,8 @@ void linear_regression(const Matrix& mx,  const Matrix& my,
   float previous = cost_function(mx,my,temp,size,result);
   //while (runtime_tollerance > tollerance) {
   for (uint32_t i = 0; i < 1000; ++i) {
-  float cost_d0 = cost_function(mx, my, size, result, 0);
-  float cost_d1 = cost_function(mx, my, size, result, 1);
+  float cost_d0 = cost_function_grad(mx, my, size, result, 0);
+  float cost_d1 = cost_function_grad(mx, my, size, result, 1);
 
   result.data[0] -= (learning_c * cost_d0);
   result.data[1] -= (learning_c * cost_d1);

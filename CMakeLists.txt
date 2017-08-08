@@ -17,7 +17,8 @@ init_clang_tidy()
 #options
 option(DUMP_KERNEL_ASSEMBLY "Wheter or not to generate readable assembly code from kernels" ON)
 option(BUILD_OPENCL "Wheter or not to build the opencl side of code" ON)
-option(USE_OPENCL_2_0 "Wheter or not to use opencl 2.0" OFF)
+option(USE_OPENCL_2_0 "Wheter or not to use opencl 2.0" ON)
+option(BUILD_TESTS "Wheter or not to build the tests" ON)
 
 #check the compiler
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
@@ -36,6 +37,7 @@ endif()
 MESSAGE( STATUS "DUMP_KERNEL_ASSEMBLY:         " ${DUMP_KERNEL_ASSEMBLY})
 MESSAGE( STATUS "BUILD_OPENCL:                 " ${BUILD_OPENCL})
 MESSAGE( STATUS "USE_OPENCL_2_0:               " ${USE_OPENCL_2_0})
+MESSAGE( STATUS "BUILD TESTS   :               " ${BUILD_TESTS})
 
 #adding cpu core
 add_subdirectory(src/cpu)
@@ -45,4 +47,8 @@ if(${BUILD_OPENCL} STREQUAL "ON")
     add_subdirectory(examples/opencl/01_hello_world)
 endif()
 
+#adding test
+if(${BUILD_TESTS} STREQUAL "ON")
+    add_subdirectory(tests)
+endif()
 add_subdirectory(examples/cpu/01_linear_regression)
