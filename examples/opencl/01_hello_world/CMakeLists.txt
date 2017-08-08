@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.6)
 
-
-
 #clang++ -target amdgcn-amd-amdhsa-opencl  -x cl hello.cl -c -S
   
 project(01_cl_hello_world)   
@@ -16,7 +14,6 @@ project(01_cl_hello_world)
     add_definitions(-DUSE_OPENCL_2_0)
     endif()
 
-    
 	#defining standard compiling flags
 	if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 	     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  /std:c++14 /W4 /arch:AVX2 /fp:fast")
@@ -32,7 +29,7 @@ project(01_cl_hello_world)
 	set_visual_studio_working_directory_if_needed()
 
 	#copying the kernel in same folder
-	copy_kernel(hello.cl)
+	copy_local_file(hello.cl)
     target_link_libraries(${PROJECT_NAME} ${OpenCL_LIBRARIES} )
 
 	#enabling clang tidy

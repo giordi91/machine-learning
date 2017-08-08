@@ -19,6 +19,7 @@ option(DUMP_KERNEL_ASSEMBLY "Wheter or not to generate readable assembly code fr
 option(BUILD_OPENCL "Wheter or not to build the opencl side of code" ON)
 option(USE_OPENCL_2_0 "Wheter or not to use opencl 2.0" ON)
 option(BUILD_TESTS "Wheter or not to build the tests" ON)
+option(RUN_TESTS "Wheter or not run the tests" ON)
 
 #check the compiler
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
@@ -38,6 +39,7 @@ MESSAGE( STATUS "DUMP_KERNEL_ASSEMBLY:         " ${DUMP_KERNEL_ASSEMBLY})
 MESSAGE( STATUS "BUILD_OPENCL:                 " ${BUILD_OPENCL})
 MESSAGE( STATUS "USE_OPENCL_2_0:               " ${USE_OPENCL_2_0})
 MESSAGE( STATUS "BUILD TESTS   :               " ${BUILD_TESTS})
+MESSAGE( STATUS "RUN TESTS   :                 " ${RUN_TESTS})
 
 #adding cpu core
 add_subdirectory(src/cpu)
@@ -51,4 +53,6 @@ endif()
 if(${BUILD_TESTS} STREQUAL "ON")
     add_subdirectory(tests)
 endif()
+
 add_subdirectory(examples/cpu/01_linear_regression)
+

@@ -10,13 +10,20 @@ function(generate_opencl_diassembly current_project_name file_name)
 endfunction()
 
 
-#this function is used to copy a kernel to the current being built executable folder
-function(copy_kernel file_name)
+#this function copy a file to the output binary dir but is gonna concatenate that with 
+#the current source dir, so the path must be arelative path from the source dir
+function(copy_local_file file_name)
     add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy
                    ${CMAKE_CURRENT_SOURCE_DIR}/${file_name} $<TARGET_FILE_DIR:${PROJECT_NAME}>)
 endfunction()
 
+#this function copies a file given a fullpath
+function(copy_file file_name)
+    add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy
+                   ${file_name} $<TARGET_FILE_DIR:${PROJECT_NAME}>)
+endfunction()
 function(set_visual_studio_working_directory_if_needed )
 	if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 		 if ("${CMAKE_BUILD_TYPE}" STREQUAL "")
