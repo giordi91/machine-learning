@@ -52,10 +52,8 @@ TEST(matrix_mult_transpose, naive) {
   core::cpu::Matrix outm{out.data(), 1024,1024};
 
   core::cpu::matrix_mult_transpose(Am,Cm, outm);
-  for(int i =0;i<1024*1024; ++i)
-  {
-     std::cout<<i<<std::endl;
-     ASSERT_FLOAT_EQ(outm.data[i], ref[i]); 
-  }
+  auto totalSize = 1024*1024;
+  for(int i =0;i<totalSize; ++i)
+     ASSERT_NEAR(outm.data[i], ref[i], 0.00001); 
 
 }
