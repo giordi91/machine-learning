@@ -35,7 +35,15 @@ project(tests)
         #run getting out is a pain, so I am adding a custom command to trigger the test after 
         #build and setting the working directo as the current output dir, and expect
         #the test file to be picked as tests/myTestFile.txt
-        add_custom_command(TARGET tests 
+        add_custom_command(
             COMMAND ./tests/tests
-            WORKING_DIRECTORY ${CMAKE_BINARY_DIR} )
+            WORKING_DIRECTORY ${CMAKE_BINARY_DIR} 
+            OUTPUT run_my_tests)
+
+        # Custom target will always cause its dependencies to be evaluated and is
+        # run by default
+        add_custom_target(dummy_target ALL
+            DEPENDS
+              run_my_tests 
+            )
     endif()
