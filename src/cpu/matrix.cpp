@@ -2,17 +2,37 @@
 
 #include <iostream>
 #include <cassert>
+#include <vector>
 
 namespace core {
 namespace cpu {
 
-void mult_matrix( const Matrix& m1, const Matrix& m2, Matrix& out)
+void matrix_transpose(const Matrix &m, Matrix &out) {
+
+  assert(m.size_x == out.size_y);
+  assert(m.size_y == out.size_x);
+
+  int N = m.size_x;
+  int M = m.size_y;
+  for (int n = 0; n < N * M; n++) {
+    int i = n / N;
+    int j = n % N;
+    out.data[n] = m.data[M * j + i];
+  }
+}
+
+void matrix_mult( const Matrix& m1, const Matrix& m2, Matrix& out )
 {
     assert(m1.size_y == m2.size_x);
     assert(m1.size_x == out.size_x);
-    assert(m1.size_y == out.size_y);
-    std::cout<<"LOL Matrix mult"<<std::endl;
+    assert(m2.size_y == out.size_y);
+	std::vector<float> temp;
+    temp.resize(m2.size_x*m2.size_y);
+    Matrix tempM{temp.data(),m2.size_y,m2.size_x};
+    
 
+	matrix_transpose(m2,tempM);
+	matrix_mult_transpose(m1,tempM,out);
 }
 void matrix_mult_transpose( const Matrix& m1, const Matrix& m2, Matrix& out)
 {

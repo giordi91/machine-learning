@@ -36,6 +36,7 @@ project(tests)
         #build and setting the working directo as the current output dir, and expect
         #the test file to be picked as tests/myTestFile.txt
         add_custom_command(
+            DEPENDS tests
             COMMAND ./tests/tests
             WORKING_DIRECTORY ${CMAKE_BINARY_DIR} 
             OUTPUT run_my_tests)

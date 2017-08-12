@@ -10,7 +10,8 @@ struct Matrix {
   uint32_t size_y = 0;
 };
 
-void mult_matrix( const Matrix& m1, const Matrix& m2, Matrix& out);
+void matrix_mult( const Matrix& m1, const Matrix& m2, Matrix& out);
+void matrix_transpose(const Matrix& m, Matrix& out);
 void matrix_mult_transpose( const Matrix& m1, const Matrix& m2, Matrix& out);
 void matrix_sub( const Matrix& m1, const Matrix& m2, Matrix& out);
 void matrix_ew_mult( const Matrix& m1, const Matrix& m2, Matrix& out);

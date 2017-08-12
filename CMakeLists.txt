@@ -54,5 +54,7 @@ if(${BUILD_TESTS} STREQUAL "ON")
     add_subdirectory(tests)
 endif()
 
+#cpu examples
 add_subdirectory(examples/cpu/01_linear_regression)
+add_subdirectory(examples/cpu/02_close_handler)
 
