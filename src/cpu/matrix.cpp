@@ -106,6 +106,14 @@ float matrix_accumulate( const Matrix& m1)
 
 }
 
+void matrix_mult_scalar_inplace(Matrix &m, float scalar)
+{
+  uint32_t total_size = m.size_x * m.size_y;
+  for (uint32_t i = 0; i < total_size; ++i) {
+		m.data[i]*=scalar;
+  }
+}
+
 } // end namespace cpu
 } // end namespace core
 
