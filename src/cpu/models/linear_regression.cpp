@@ -16,6 +16,7 @@ inline void cost_function_grad(const Matrix &mx, const Matrix &my,
   matrix_sub(intermediate, my, intermediate);
 
   //here we allocate temporary data to get the transpose of the intremediate matrix 
+  //TODO use custom allocator to avoid expensive allocation on a per iteration basis
   std::vector<float> transpose_intermediate;
   transpose_intermediate.resize(intermediate.size_y * intermediate.size_x);
   
@@ -33,9 +34,10 @@ inline void cost_function_grad_y_transposed(const Matrix &mx, const Matrix &my,
 
   // here we compute the regular cost by computing the weights time the samples
   matrix_mult_transpose( coeff,mx, intermediate);
-  // we subtract the error so we compute the error
+  // we subtract expected result so we compute the error
+  // here we are using vector sub, because we expect the cost to be a vector,
+  // so doesnt matter if is a colum or row vector we can subtract it correctly
   vector_sub(intermediate, my, intermediate);
-  
   //multiplying the resulting cost by the colum feature of x
   matrix_mult(intermediate, mx, outCoeff);
 }
@@ -59,6 +61,8 @@ void linear_regression(const Matrix &mx, const Matrix &my, uint32_t size,
   float learning_c = learning_rate * (1.0f / float(size));
   auto temp_m = std::make_unique<float[]>(mx.size_x * result.size_x);
   Matrix temp{temp_m.get(), result.size_x, mx.size_x };
+  //TODO use custom allocator, although here is a fixed initial cost not
+  //too much of an issue
   std::vector<float> outRes;
   outRes.resize(result.size_x * result.size_y);
   Matrix tempRes{outRes.data(), result.size_x, result.size_y};
