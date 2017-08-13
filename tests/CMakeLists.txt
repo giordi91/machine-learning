@@ -46,5 +46,14 @@ project(tests)
         add_custom_target(dummy_target ALL
             DEPENDS
               run_my_tests 
+              create_dataset_soft_link
+            )
+        MESSAGE(STATUS "Creating soft link for dataset: \n  ${CMAKE_SOURCE_DIR}/tests/test_data/datasets ->  ${CMAKE_BINARY_DIR}/${PROJECT_NAME}/datasets")
+        #command to generate a soft link to the dataset folder
+        add_custom_command(
+            DEPENDS tests
+            COMMAND ln -s ${CMAKE_SOURCE_DIR}/tests/test_data/datasets  ${CMAKE_BINARY_DIR}/${PROJECT_NAME}/datasets 
+            OUTPUT create_dataset_soft_link 
             )
     endif()
+

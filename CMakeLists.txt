@@ -70,3 +70,5 @@ add_subdirectory(examples/cpu/01_linear_regression)
 add_subdirectory(examples/cpu/02_close_handler)
 add_subdirectory(examples/cpu/03_load_cifar_10)
 endif()
+
+
