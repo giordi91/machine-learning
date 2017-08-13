@@ -16,7 +16,7 @@ project(tests)
 
 	#adding the executable
     add_executable(${PROJECT_NAME} ${SOURCE_FILES} )
-    target_link_libraries(${PROJECT_NAME} mg_ml_cpu ${GTEST_BOTH_LIBRARIES} pthread)
+    target_link_libraries(${PROJECT_NAME} ${MAIN_LIB_NAME} ${GTEST_BOTH_LIBRARIES} pthread)
 
 
     #here we look for all the test data file, and we are gonna copy that in the output 

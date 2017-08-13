@@ -17,9 +17,12 @@ init_clang_tidy()
 #options
 option(DUMP_KERNEL_ASSEMBLY "Wheter or not to generate readable assembly code from kernels" ON)
 option(BUILD_OPENCL "Wheter or not to build the opencl side of code" ON)
+option(BUILD_CPU  "Wheter or not to build the cpu side of code" ON)
+option(BUILD_CUDA "Wheter or not to build the cuda side of code" OFF)
 option(USE_OPENCL_2_0 "Wheter or not to use opencl 2.0" ON)
 option(BUILD_TESTS "Wheter or not to build the tests" ON)
 option(RUN_TESTS "Wheter or not run the tests" ON)
+option(BUILD_EXAMPLES "Wheter or not to build the examples" ON)
 
 #check the compiler
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
@@ -35,17 +38,24 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 endif()
 
 
+#just an overal log of the passed options
+MESSAGE( STATUS "Building with the following options")
 MESSAGE( STATUS "DUMP_KERNEL_ASSEMBLY:         " ${DUMP_KERNEL_ASSEMBLY})
+MESSAGE( STATUS "BUILD_CPU:                    " ${BUILD_CPU})
+MESSAGE( STATUS "BUILD_CUDA:                   " ${BUILD_CUDA})
 MESSAGE( STATUS "BUILD_OPENCL:                 " ${BUILD_OPENCL})
 MESSAGE( STATUS "USE_OPENCL_2_0:               " ${USE_OPENCL_2_0})
-MESSAGE( STATUS "BUILD TESTS   :               " ${BUILD_TESTS})
-MESSAGE( STATUS "RUN TESTS   :                 " ${RUN_TESTS})
+MESSAGE( STATUS "BUILD_EXAMPLES:               " ${BUILD_EXAMPLES})
+MESSAGE( STATUS "BUILD TESTS:                  " ${BUILD_TESTS})
+MESSAGE( STATUS "RUN TESTS:                    " ${RUN_TESTS})
 
+#defining some useful variables
+set(MAIN_LIB_NAME "mg_ml")
 #adding cpu core
-add_subdirectory(src/cpu)
+add_subdirectory(src)
 
 #adding opencl examples
-if(${BUILD_OPENCL} STREQUAL "ON")
+if(${BUILD_OPENCL} STREQUAL "ON" AND ${BUILD_EXAMPLES} STREQUAL "ON")
     add_subdirectory(examples/opencl/01_hello_world)
 endif()
 
@@ -55,6 +65,7 @@ if(${BUILD_TESTS} STREQUAL "ON")
 endif()
 
 #cpu examples
+if(${BUILD_CPU} STREQUAL "ON" AND ${BUILD_EXAMPLES} STREQUAL "ON")
 add_subdirectory(examples/cpu/01_linear_regression)
 add_subdirectory(examples/cpu/02_close_handler)
-
+endif()

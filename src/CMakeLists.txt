@@ -4,16 +4,26 @@ cmake_minimum_required(VERSION 3.6)
 
 #clang++ -target amdgcn-amd-amdhsa-opencl  -x cl hello.cl -c -S
   
-project(mg_ml_cpu)   
+project(${MAIN_LIB_NAME})   
 
-    file(GLOB_RECURSE SOURCE_FILES "*.cpp" "*.h")
-    include_directories(${CMAKE_SOURCE_DIR}/include ${OpenCL_INCLUDE_DIRS})
+    #looking for the cpu files
+    if(${BUILD_CPU} STREQUAL "ON")
+    file(GLOB_RECURSE CPU_SOURCE_FILES "cpu/*.cpp" "cpu/*.h")
     
 	message (STATUS "found CPU files")
-    foreach(dir ${SOURCE_FILES})
+    foreach(dir ${CPU_SOURCE_FILES})
+          message(STATUS "dir='${dir}'")
+      endforeach()
+  endif()
+    #looking for the shared files
+    file(GLOB_RECURSE COMMON_SOURCE_FILES "utils/*.cpp" "utils/*.h")
+    
+	message (STATUS "found common files")
+    foreach(dir ${COMMON_SOURCE_FILES})
           message(STATUS "dir='${dir}'")
       endforeach()
 
+    include_directories(${CMAKE_SOURCE_DIR}/include )
 	#defining standard compiling flags
 	if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 	     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  /std:c++14 /W4 /arch:AVX2 /fp:fast")
@@ -22,7 +32,7 @@ project(mg_ml_cpu)
     endif()
 
 	#adding the executable
-    add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES} )
+    add_library(${PROJECT_NAME} STATIC ${CPU_SOURCE_FILES} ${COMMON_SOURCE_FILES})
 
 	#enabling clang tidy
     enable_clang_tidy_for_project()

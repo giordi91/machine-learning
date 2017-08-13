@@ -18,7 +18,7 @@ project(02_close_handler)
 
 	#adding the executable
     add_executable(${PROJECT_NAME}  ${SOURCE_FILES})
-    target_link_libraries(${PROJECT_NAME} mg_ml_cpu )
+    target_link_libraries(${PROJECT_NAME} ${MAIN_LIB_NAME} )
 
 	#enabling clang tidy
     enable_clang_tidy_for_project()

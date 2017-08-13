@@ -1,5 +1,5 @@
 #include "test_utils.h"
-#include <mg_ml/cpu/matrix.h>
+#include <mg_ml/cpu/matrix_functions.h>
 
 TEST(matrix_mult, naive) {
 
@@ -23,9 +23,9 @@ TEST(matrix_mult, naive) {
   EXPECT_EQ(B.size(), 32*64);
   EXPECT_EQ(ref.size(), 1024*64);
 
-  core::cpu::Matrix Am{A.data(), 1024,32};
-  core::cpu::Matrix Bm{B.data(), 32,64};
-  core::cpu::Matrix outm{out.data(), 1024,64};
+  core::Matrix Am{A.data(), 1024,32};
+  core::Matrix Bm{B.data(), 32,64};
+  core::Matrix outm{out.data(), 1024,64};
 
   core::cpu::matrix_mult(Am,Bm, outm);
   auto totalSize = 1024*64;
@@ -55,9 +55,9 @@ TEST(matrix_mult_transpose, naive) {
   EXPECT_EQ(C.size(), 1024*32);
   EXPECT_EQ(ref.size(), 1024*1024);
 
-  core::cpu::Matrix Am{A.data(), 1024,32};
-  core::cpu::Matrix Cm{C.data(), 1024,32};
-  core::cpu::Matrix outm{out.data(), 1024,1024};
+  core::Matrix Am{A.data(), 1024,32};
+  core::Matrix Cm{C.data(), 1024,32};
+  core::Matrix outm{out.data(), 1024,1024};
 
   core::cpu::matrix_mult_transpose(Am,Cm, outm);
   auto totalSize = 1024*1024;

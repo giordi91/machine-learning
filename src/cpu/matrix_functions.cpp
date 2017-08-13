@@ -1,4 +1,4 @@
-#include <mg_ml/cpu/matrix.h>
+#include <mg_ml/cpu/matrix_functions.h>
 
 #include <iostream>
 #include <cassert>

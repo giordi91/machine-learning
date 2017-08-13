@@ -5,15 +5,15 @@
 #include <random>
 #include <sstream>
 
-#include <mg_ml/cpu/matrix.h>
+#include <mg_ml/cpu/matrix_functions.h>
 #include <mg_ml/cpu/models/linear_regression.h>
-#include <mg_ml/utils/plotting.h>
+#include <mg_ml/common/plotting.h>
 
 //clang++ main.cpp -std=c++11 -o gnutest && ./gnutest
 using plot::plot_line;
 using plot::GnuPlot;
 using plot::GnuFile;
-using core::cpu::Matrix;
+using core::Matrix;
 
 void generate_points(Matrix& mx , Matrix& my, uint32_t size)
 {

@@ -1,5 +1,5 @@
 #include "test_utils.h"
-#include <mg_ml/cpu/matrix.h>
+#include <mg_ml/cpu/matrix_functions.h>
 
 
 TEST(matrix_transpose, naive) {
@@ -19,8 +19,8 @@ TEST(matrix_transpose, naive) {
   EXPECT_EQ(A.size(), 1024*32);
   EXPECT_EQ(Aref.size(), 32*1024);
 
-  core::cpu::Matrix Am{A.data(), 1024,32};
-  core::cpu::Matrix outm{out.data(), 32,1024};
+  core::Matrix Am{A.data(), 1024,32};
+  core::Matrix outm{out.data(), 32,1024};
 
   core::cpu::matrix_transpose(Am,outm);
   auto totalSize = 1024*32;
