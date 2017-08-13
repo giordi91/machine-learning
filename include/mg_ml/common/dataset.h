@@ -5,9 +5,9 @@
 #include <mg_ml/common/matrix.h>
 
 namespace dataset {
-using Vf = std::vector<float>;
-using core::Matrix;
+using core::MatrixI;
 
-void load_cifar_10(const std::string &path, Matrix &X, Matrix &Y, Vf &Xstorage,
-                   Vf &Ystorage);
+bool load_cifar_10(const std::string &rootpath, MatrixI<char> &X, MatrixI<char> &Y,
+                   std::vector<char> &Xstorage, std::vector<char> &Ystorage);
+
 } // end namespace dataset

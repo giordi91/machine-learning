@@ -52,7 +52,7 @@ project(tests)
         #command to generate a soft link to the dataset folder
         add_custom_command(
             DEPENDS tests
-            COMMAND ln -s ${CMAKE_SOURCE_DIR}/tests/test_data/datasets  ${CMAKE_BINARY_DIR}/${PROJECT_NAME}/datasets 
+            COMMAND ln -f -s ${CMAKE_SOURCE_DIR}/tests/test_data/datasets  ${CMAKE_BINARY_DIR}/${PROJECT_NAME}/datasets 
             OUTPUT create_dataset_soft_link 
             )
     endif()
