@@ -36,6 +36,7 @@ build
 Win32
 x64
 .vs
+datasets
 
 #vs cmake
 CMakeSettings.json

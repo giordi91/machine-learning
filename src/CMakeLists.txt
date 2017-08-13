@@ -16,7 +16,7 @@ project(${MAIN_LIB_NAME})
       endforeach()
   endif()
     #looking for the shared files
-    file(GLOB_RECURSE COMMON_SOURCE_FILES "utils/*.cpp" "utils/*.h")
+    file(GLOB_RECURSE COMMON_SOURCE_FILES "common/*.cpp")
     
 	message (STATUS "found common files")
     foreach(dir ${COMMON_SOURCE_FILES})
