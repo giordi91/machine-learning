@@ -52,4 +52,12 @@ bool load_cifar_10(const std::string &rootpath, MatrixI<char> &X, MatrixI<char> 
 
   return true;
 }
+
+bool dump_image_from_cifar_10_dataset(const std::string &outpath,
+                                      MatrixI<char> &data, uint32_t index)
+{
+
+
+
+}
 }// end namespace dataset
