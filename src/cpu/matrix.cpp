@@ -7,6 +7,12 @@
 namespace core {
 namespace cpu {
 
+std::ostream& operator<< (std::ostream& stream, const Matrix& matrix)
+{
+    stream<<matrix.size_x<<"x"<<matrix.size_y<<std::endl;
+    return stream;
+} 
+
 void matrix_transpose(const Matrix &m, Matrix &out) {
 
   assert(m.size_x == out.size_y);
@@ -64,6 +70,25 @@ void matrix_sub( const Matrix& m1, const Matrix& m2, Matrix& out)
     assert(m1.size_y == m2.size_y);
     assert(m1.size_x == out.size_x);
     assert(m1.size_y == out.size_y);
+    uint32_t total_size = m1.size_x * m1.size_y;
+
+    const float* const d1 = m1.data;
+    const float* const d2 = m2.data;
+    float* const o = out.data;
+    for(uint32_t i =0; i<total_size; ++i)
+        o[i] = d1[i] -d2[i];    
+
+}
+
+
+void vector_sub( const Matrix& m1, const Matrix& m2, Matrix& out)
+{
+    assert(m1.size_x ==1 || m1.size_y == 1);
+    assert(m2.size_x ==1 || m2.size_y == 1);
+    assert(out.size_x ==1 || out.size_y == 1);
+    assert(m1.total_size() == m2.total_size());
+    assert(m1.total_size() == out.total_size());
+
     uint32_t total_size = m1.size_x * m1.size_y;
 
     const float* const d1 = m1.data;

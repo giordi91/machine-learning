@@ -39,3 +39,8 @@ x64
 
 #vs cmake
 CMakeSettings.json
+
+
+#ctags file
+tags
+
