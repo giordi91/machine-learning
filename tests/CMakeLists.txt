@@ -9,9 +9,9 @@ project(tests)
 
 	#defining standard compiling flags
 	if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-	     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  /std:c++14 /W4 /arch:AVX2 /fp:fast")
+	     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  /std:c++17 /W4 /arch:AVX2 /fp:fast")
 	else()
-	     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -pedantic -Wextra -m64 -mavx2 -mfma -ffast-math")
+	     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wall -pedantic -Wextra -m64 -mavx2 -mfma -ffast-math")
     endif()
 
 	#adding the executable

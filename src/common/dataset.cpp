@@ -34,6 +34,7 @@ bool load_cifar_10(const std::string &rootpath, MatrixI<uint8_t> &X, MatrixI<uin
     for (uint32_t f =0; f<10000;++f)
     {
         //reading the class of the image 
+
         uint8_t* currClass = yptr + i*IMAGES_PER_FILE + f;
         file.read((char*)currClass, 1);
         
