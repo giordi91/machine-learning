@@ -21,4 +21,5 @@ project(03_load_cifar_10)
     target_link_libraries(${PROJECT_NAME} ${MAIN_LIB_NAME} )
 
 	#enabling clang tidy
+    #set_target_properties(03_load_cifar_10  PROPERTIES CXX_CLANG_TIDY "${DO_CLANG_TIDY}")
     enable_clang_tidy_for_project()

@@ -15,7 +15,7 @@ using plot::GnuPlot;
 using plot::GnuFile;
 using core::Matrix;
 
-void generate_points(Matrix &mx, Matrix &my, uint32_t size) {
+void generate_points(Matrix<float> &mx, Matrix<float> &my, uint32_t size) {
   // line equation we want to gnerate points around y(x) = CONSTANT + SLOPE*x;
   const float SLOPE = 0.02;
   const float CONSTANT = 1.0f;
@@ -54,15 +54,15 @@ int main() {
 
   auto xmem = std::make_unique<float[]>(SIZE * 2);
   auto ymem = std::make_unique<float[]>(SIZE);
-  Matrix mx2{xmem.get(), SIZE, 2};
-  Matrix my2{ymem.get(), SIZE, 1};
+  Matrix<float> mx2{xmem.get(), SIZE, 2};
+  Matrix<float> my2{ymem.get(), SIZE, 1};
 
   // generate_points(mx.data, my.data, SIZE);
   generate_points(mx2, my2, SIZE);
   write_file(mx2.data, my2.data, SIZE);
 
   float coeffs[2] = {0.0f, 0.0f};
-  Matrix coeffM{coeffs, 1, 2};
+  Matrix<float> coeffM{coeffs, 1, 2};
   core::cpu::linear_regression(mx2, my2, SIZE, DESCENT_STEP, coeffM, 200);
 
   GnuPlot plot;

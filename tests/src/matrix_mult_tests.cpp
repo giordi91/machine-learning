@@ -23,11 +23,11 @@ TEST(matrix_mult, naive) {
   EXPECT_EQ(B.size(), 32*64);
   EXPECT_EQ(ref.size(), 1024*64);
 
-  core::Matrix Am{A.data(), 1024,32};
-  core::Matrix Bm{B.data(), 32,64};
-  core::Matrix outm{out.data(), 1024,64};
+  core::Matrix<float> Am{A.data(), 1024,32};
+  core::Matrix<float> Bm{B.data(), 32,64};
+  core::Matrix<float> outm{out.data(), 1024,64};
 
-  core::cpu::matrix_mult(Am,Bm, outm);
+  core::cpu::matrix_mult<float>(Am,Bm, outm);
   auto totalSize = 1024*64;
   for(int i =0;i<totalSize; ++i)
      ASSERT_NEAR(outm.data[i], ref[i], 0.00001); 
@@ -55,11 +55,11 @@ TEST(matrix_mult_transpose, naive) {
   EXPECT_EQ(C.size(), 1024*32);
   EXPECT_EQ(ref.size(), 1024*1024);
 
-  core::Matrix Am{A.data(), 1024,32};
-  core::Matrix Cm{C.data(), 1024,32};
-  core::Matrix outm{out.data(), 1024,1024};
+  core::Matrix<float> Am{A.data(), 1024,32};
+  core::Matrix<float> Cm{C.data(), 1024,32};
+  core::Matrix<float> outm{out.data(), 1024,1024};
 
-  core::cpu::matrix_mult_transpose(Am,Cm, outm);
+  core::cpu::matrix_mult_transpose<float>(Am,Cm, outm);
   auto totalSize = 1024*1024;
   for(int i =0;i<totalSize; ++i)
      ASSERT_NEAR(outm.data[i], ref[i], 0.00001); 

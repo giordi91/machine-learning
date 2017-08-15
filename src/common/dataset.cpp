@@ -5,7 +5,7 @@
 #include <cmath>
 namespace dataset {
 
-bool load_cifar_10(const std::string &rootpath, MatrixI<uint8_t> &X, MatrixI<uint8_t> &Y,
+bool load_cifar_10(const std::string &rootpath, Matrix<uint8_t> &X, Matrix<uint8_t> &Y,
                    std::vector<uint8_t> &Xstorage, std::vector<uint8_t> &Ystorage)
   //the cifar_10 is composed of of 5 different files, lests loop them
 {
@@ -59,7 +59,7 @@ bool load_cifar_10(const std::string &rootpath, MatrixI<uint8_t> &X, MatrixI<uin
 
 //assum each row is a picture 
 bool dump_image_from_cifar_10_dataset(const std::string &outpath,
-                                      MatrixI<uint8_t> &data, uint32_t index)
+                                      Matrix<uint8_t> &data, uint32_t index)
 {
     
     std::ofstream out_file;

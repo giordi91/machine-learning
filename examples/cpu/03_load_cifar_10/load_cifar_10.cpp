@@ -7,8 +7,8 @@
 
 int main() {
   const std::string rootpath{"tests/datasets/"};
-  core::MatrixI<uint8_t> X;
-  core::MatrixI<uint8_t> Y;
+  core::Matrix<uint8_t> X;
+  core::Matrix<uint8_t> Y;
   std::vector<uint8_t> Xsto;
   std::vector<uint8_t> Ysto;
 
