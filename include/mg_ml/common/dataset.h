@@ -7,9 +7,23 @@
 namespace dataset {
 using core::MatrixI;
 
-bool load_cifar_10(const std::string &rootpath, MatrixI<char> &X, MatrixI<char> &Y,
-                   std::vector<char> &Xstorage, std::vector<char> &Ystorage);
+enum class CFarClasses
+{
+    AIRPLANE=0,
+    AUTOMOBILE,
+    BIRD,
+    CAT,
+    DEER,
+    DOG,
+    FROG,
+    HORSE,
+    SHIP,
+    TRUCK
+}
+
+bool load_cifar_10(const std::string &rootpath, MatrixI<uint8_t> &X, MatrixI<uint8_t> &Y,
+                   std::vector<uint8_t> &Xstorage, std::vector<uint8_t> &Ystorage);
 bool dump_image_from_cifar_10_dataset(const std::string &outpath,
-                                      MatrixI<char> &data, uint32_t index);
+                                      MatrixI<uint8_t> &data, uint32_t index);
 
 } // end namespace dataset

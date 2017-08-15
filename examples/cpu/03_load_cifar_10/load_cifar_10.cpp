@@ -5,13 +5,12 @@
 #include <mg_ml/common/dataset.h>
 #include <mg_ml/common/matrix.h>
 
-using core::MatrixI;
 int main() {
   const std::string rootpath{"tests/datasets/"};
-  core::MatrixI<char> X;
-  core::MatrixI<char> Y;
-  std::vector<char> Xsto;
-  std::vector<char> Ysto;
+  core::MatrixI<uint8_t> X;
+  core::MatrixI<uint8_t> Y;
+  std::vector<uint8_t> Xsto;
+  std::vector<uint8_t> Ysto;
 
   bool res = dataset::load_cifar_10(rootpath, X, Y, Xsto, Ysto);
   if (!res) {
@@ -22,6 +21,10 @@ int main() {
 
   std::cout<<"X size: "<<X.size_x<< " "<<X.size_y<<std::endl;
   std::cout<<"Y size: "<<Y.size_x<< " "<<Y.size_y<<std::endl;
+
+  int L = 3;
+  dataset::dump_image_from_cifar_10_dataset("/home/giordi/test.txt", X,L);
+  std::cout<<"Y " <<(int)Y.data[L]<<std::endl;
 
   return 0;
 }
