@@ -1,5 +1,5 @@
+#include <csignal>
 #include <iostream>
-#include <signal.h>
 
 bool forever = true;
 

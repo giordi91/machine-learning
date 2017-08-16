@@ -15,7 +15,7 @@ using plot::GnuPlot;
 using plot::GnuFile;
 using core::Matrix;
 
-void generate_points(Matrix<float> &mx, Matrix<float> &my, uint32_t size) {
+void generate_points(Matrix<float> *mx, Matrix<float> *my, uint32_t size) {
   // line equation we want to gnerate points around y(x) = CONSTANT + SLOPE*x;
   const float SLOPE = 0.02;
   const float CONSTANT = 1.0f;
@@ -33,9 +33,9 @@ void generate_points(Matrix<float> &mx, Matrix<float> &my, uint32_t size) {
     std::uniform_real_distribution<float> dist2(min, max);
     float finaly =
         min + dist2(mt) / (static_cast<float>(RAND_MAX / (max - min)));
-    mx.data[i * 2] = 1.0f;
-    mx.data[i * 2 + 1] = static_cast<float>(i);
-    my.data[i] = finaly;
+    mx->data[i * 2] = 1.0f;
+    mx->data[i * 2 + 1] = static_cast<float>(i);
+    my->data[i] = finaly;
   }
 }
 
@@ -58,7 +58,7 @@ int main() {
   Matrix<float> my2{ymem.get(), SIZE, 1};
 
   // generate_points(mx.data, my.data, SIZE);
-  generate_points(mx2, my2, SIZE);
+  generate_points(&mx2, &my2, SIZE);
   write_file(mx2.data, my2.data, SIZE);
 
   float coeffs[2] = {0.0f, 0.0f};

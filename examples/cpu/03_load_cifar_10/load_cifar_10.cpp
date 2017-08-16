@@ -24,7 +24,7 @@ int main() {
 
   int L = 3;
   dataset::dump_image_from_cifar_10_dataset("/home/giordi/test.txt", X,L);
-  std::cout<<"Y " <<(int)Y.data[L]<<std::endl;
+  std::cout<<"Y " <<static_cast<int>(Y.data[L])<<std::endl;
 
   
   return 0;

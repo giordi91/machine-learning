@@ -1,8 +1,10 @@
-#include <mg_ml/common/dataset.h>
+#include <cmath>
 #include <fstream>
 #include <iostream>
 #include <sstream>
-#include <cmath>
+
+#include <mg_ml/common/dataset.h>
+
 namespace dataset {
 
 bool load_cifar_10(const std::string &rootpath, Matrix<uint8_t> &X, Matrix<uint8_t> &Y,
@@ -36,11 +38,11 @@ bool load_cifar_10(const std::string &rootpath, Matrix<uint8_t> &X, Matrix<uint8
         //reading the class of the image 
 
         uint8_t* currClass = yptr + i*IMAGES_PER_FILE + f;
-        file.read((char*)currClass, 1);
+        file.read(reinterpret_cast<char*>(currClass), 1);
         
         //reading the image
         uint8_t *currImage = xptr + (i * IMAGES_PER_FILE + f) * IMAGE_DATA_SIZE;
-        file.read((char*)currImage, IMAGE_DATA_SIZE);
+        file.read(reinterpret_cast<char*>(currImage), IMAGE_DATA_SIZE);
     }
   }
 
@@ -63,15 +65,16 @@ bool dump_image_from_cifar_10_dataset(const std::string &outpath,
 {
     
     std::ofstream out_file;
-    out_file.open(outpath, std::ios::out );
-    if(!out_file)
-        return false;
+    out_file.open(outpath, std::ios::out);
+    if (!out_file) {
+      return false;
+    }
     //
     //size of the picture is the colum count of the matrix, since each row is a full
     //picture, the data is first all the r, then all the g then all the b, so if 
     //we divide by 3 we get the total number of pixels, taking squre root since 
     //image from cifar 10 is squared
-    uint32_t pic_size = sqrt(data.size_y/3); 
+    uint32_t pic_size = sqrt(std::floor((data.size_y/3.0))); 
     uint32_t pic_size_sq = pic_size * pic_size ;
     //shifting the pointer of the image by how many images we wish to skip
     const uint8_t* ptr= data.data + data.size_y*index;
