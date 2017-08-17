@@ -69,6 +69,7 @@ if(${BUILD_CPU} STREQUAL "ON" AND ${BUILD_EXAMPLES} STREQUAL "ON")
 add_subdirectory(examples/cpu/01_linear_regression)
 add_subdirectory(examples/cpu/02_close_handler)
 add_subdirectory(examples/cpu/03_load_cifar_10)
+add_subdirectory(examples/cpu/04_logistic_regression)
 endif()
 
 
