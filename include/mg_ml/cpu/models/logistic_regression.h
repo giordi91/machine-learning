@@ -9,6 +9,10 @@ namespace models {
 namespace cpu {
 
 using core::cpu::matrix_mult_transpose;
+using core::cpu::matrix_mult;
+using core::cpu::matrix_log;
+using core::cpu::matrix_log_inplace;
+using core::cpu::matrix_sub_one;
 
 template<typename T>
 void simple_logistic_forward( const Matrix<T>& X, const Matrix<T>& W, Matrix<T>& out)
@@ -17,16 +21,45 @@ void simple_logistic_forward( const Matrix<T>& X, const Matrix<T>& W, Matrix<T>&
     sigmoid_inplace<T>(out);
 }
 
-template<typename T>
-void simple_logistic_backwards( const Matrix<T>& X, const Matrix<T>& W, Matrix<T>& out)
-{
-}
+//template<typename T>
+//void simple_logistic_backwards( const Matrix<T>& X, const Matrix<T>& W, Matrix<T>& out)
+//{
+//}
 
 template<typename T>
-T logistic_cost( const Matrix<T>& in)
+T logistic_cost( const Matrix<T>& in, const Matrix<T>& Y)
 {
-    return 0.0f;
+  //computing log of the matrix 
+  std::vector<T> log_data(in.total_size());
+  Matrix<T> logM{log_data.data(), in.size_x, in.size_y};
+  matrix_log(in, logM);
 
+  //computing first part y*log(a); meaning the expected result time the log of 
+  //activation
+  T out1;
+  Matrix<T> out1M{&out1,1,1};
+  matrix_mult<T>(Y, logM,out1M);
+
+  //computing second part
+  //(1-Y) * log(1-a)
+  matrix_sub_one<T,true>(in,logM);
+  matrix_log_inplace(logM);
+  std::vector<T> y_sub_data(Y.total_size());
+  Matrix<T> y_sub_m{y_sub_data.data(), Y.size_x, Y.size_y};
+  matrix_sub_one<T,true>(Y,y_sub_m);
+  T out2;
+  Matrix<T> out2M{&out2,1,1};
+  matrix_mult<T>(y_sub_m, logM,out2M);
+  //ready to return
+  return (- static_cast<T>(1.0f)/in.size_x) * (out1 + out2);
+
+
+  
+  
+
+  //now that we have the log we can start computing our result
+
+  return 0.0f;
 }
 } // end namespace cpu
 } // end namespace models 

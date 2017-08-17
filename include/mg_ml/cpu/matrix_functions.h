@@ -1,8 +1,9 @@
 #pragma once
+#include <cassert>
+#include <cmath>
 #include <cstdint>
 #include <iostream>
 #include <vector>
-#include <cassert>
 
 #include <mg_ml/common/matrix.h>
 namespace core {
@@ -71,7 +72,7 @@ void matrix_sub(const Matrix<T> &m1, const Matrix<T> &m2, Matrix<T> &out)
   assert(m1.size_y == m2.size_y);
   assert(m1.size_x == out.size_x);
   assert(m1.size_y == out.size_y);
-  uint32_t total_size = m1.size_x * m1.size_y;
+  uint32_t total_size = m1.total_size();
 
   const float *const d1 = m1.data;
   const float *const d2 = m2.data;
@@ -79,6 +80,37 @@ void matrix_sub(const Matrix<T> &m1, const Matrix<T> &m2, Matrix<T> &out)
   for (uint32_t i = 0; i < total_size; ++i)
     o[i] = d1[i] - d2[i];
 }
+
+template <typename T, bool INVERT>
+void matrix_sub_scalar(const Matrix<T> &in, T scalar, Matrix<T> &out) {
+  uint32_t total_size = in.total_size();
+
+  const float *const iptr = in.data;
+  float *const optr = out.data;
+  for (uint32_t i = 0; i < total_size; ++i) {
+    if (INVERT) {
+      optr[i] = scalar - iptr[i];
+    } else {
+      optr[i] = iptr[i] - scalar;
+    }
+  }
+}
+
+template <typename T, bool INVERT>
+void matrix_sub_one(const Matrix<T> &in, Matrix<T> &out) {
+  uint32_t total_size = in.total_size();
+
+  const float *const iptr = in.data;
+  float *const optr = out.data;
+  for (uint32_t i = 0; i < total_size; ++i) {
+    if (INVERT) {
+      optr[i] = static_cast<T>(1.0f) - iptr[i];
+    } else {
+      optr[i] = iptr[i] - static_cast<T>(1.0f);
+    }
+  }
+}
+
 template <typename T>
 void vector_sub(const Matrix<T> &m1, const Matrix<T> &m2, Matrix<T> &out)
 {
@@ -88,7 +120,7 @@ void vector_sub(const Matrix<T> &m1, const Matrix<T> &m2, Matrix<T> &out)
   assert(m1.total_size() == m2.total_size());
   assert(m1.total_size() == out.total_size());
 
-  uint32_t total_size = m1.size_x * m1.size_y;
+  uint32_t total_size = m1.total_size();
 
   const float *const d1 = m1.data;
   const float *const d2 = m2.data;
@@ -117,21 +149,38 @@ template <typename T> float matrix_accumulate(const Matrix<T> &m1)
   uint32_t total_size = m1.size_x * m1.size_y;
 
   const float *const d1 = m1.data;
-  float accum = 0.0f;
+  T accum = 0.0f;
   for (uint32_t i = 0; i < total_size; ++i)
     accum += d1[i];
   return accum;
 }
 template <typename T>
-void matrix_mult_scalar_inplace(Matrix<T> &m, float scalar)
+void matrix_mult_scalar_inplace(Matrix<T> &m, T scalar)
 {
   uint32_t total_size = m.size_x * m.size_y;
   for (uint32_t i = 0; i < total_size; ++i) {
     m.data[i] *= scalar;
   }
 }
+
+
 // std::ostream &operator<<(std::ostream &stream, const Matrix<T> &matrix);
 
+template <typename T> void matrix_log(const Matrix<T> &in, Matrix<T> out) {
+  uint32_t total_size = in.total_size();
+
+  const T*const iptr = in.data;
+  T *const optr = out.data;
+  for (uint32_t i = 0; i < total_size; ++i)
+    optr[i] = log(iptr[i]);
+}
+
+template <typename T> void matrix_log_inplace(Matrix<T> &m) {
+  uint32_t total_size = m.total_size();
+  T*const ptr = m.data;
+  for (uint32_t i = 0; i < total_size; ++i)
+    ptr[i] = log(ptr[i]);
+}
 
 } // end namespace cpu
 } // end namespace core
