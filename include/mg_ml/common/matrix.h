@@ -10,4 +10,7 @@ struct Matrix {
 
   inline uint32_t total_size() const { return size_x * size_y; }
 };
+
+using Matrixf = Matrix<float>;
+using Matrixuc = Matrix<uint8_t>;
 } // end namespace core
