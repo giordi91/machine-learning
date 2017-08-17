@@ -26,6 +26,8 @@ public:
     }
     for(const auto& o : options)
     {
+        //adding options separating name and value by a space, not sure 
+        //if this apply to all options
         oss<<" "<<o.name<<" "<<o.value<<" ";
     
     }

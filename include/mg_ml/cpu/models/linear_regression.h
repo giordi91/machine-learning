@@ -2,8 +2,15 @@
 
 #include <mg_ml/cpu/matrix_functions.h>
 
-namespace core {
+namespace models{
 namespace cpu {
+
+using core::Matrix;
+using core::cpu::matrix_mult;
+using core::cpu::matrix_mult_transpose;
+using core::cpu::matrix_sub;
+using core::cpu::vector_sub;
+using core::cpu::matrix_mult_scalar_inplace;
 
 template<typename T>
 inline void cost_function_grad(const Matrix<T> &mx, const Matrix<T> &my,
@@ -63,8 +70,10 @@ void linear_regression(const Matrix<T> &mx, const Matrix<T> &my, uint32_t size,
 {
 
   float learning_c = learning_rate * (1.0f / float(size));
-  auto temp_m = std::make_unique<float[]>(mx.size_x * result.size_x);
-  Matrix<T> temp{temp_m.get(), result.size_x, mx.size_x };
+
+  //TODO use custom allocator
+  std::vector<float>temp_m(mx.size_x * result.size_x);
+  Matrix<T> temp{temp_m.data(), result.size_x, mx.size_x };
   //TODO use custom allocator, although here is a fixed initial cost not
   //too much of an issue
   std::vector<float> outRes;

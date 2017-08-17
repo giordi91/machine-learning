@@ -63,7 +63,7 @@ int main() {
 
   float coeffs[2] = {0.0f, 0.0f};
   Matrix<float> coeffM{coeffs, 1, 2};
-  core::cpu::linear_regression(mx2, my2, SIZE, DESCENT_STEP, coeffM, 200);
+  models::cpu::linear_regression(mx2, my2, SIZE, DESCENT_STEP, coeffM, 200);
 
   GnuPlot plot;
   plot.files.resize(2);
