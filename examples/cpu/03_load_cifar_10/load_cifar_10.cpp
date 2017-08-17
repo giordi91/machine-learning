@@ -4,6 +4,7 @@
 
 #include <mg_ml/common/dataset.h>
 #include <mg_ml/common/matrix.h>
+#include <mg_ml/common/plotting.h>
 
 int main() {
   const std::string rootpath{"tests/datasets/"};
@@ -23,8 +24,14 @@ int main() {
   std::cout<<"Y size: "<<Y.size_x<< " "<<Y.size_y<<std::endl;
 
   int L = 3;
-  dataset::dump_image_from_cifar_10_dataset("/home/giordi/test.txt", X,L);
+  const std::string path{"/home/giordi/test.txt"};
+  dataset::dump_image_from_cifar_10_dataset(path, X,L);
   std::cout<<"Y " <<static_cast<int>(Y.data[L])<<std::endl;
+
+  plot::GnuPlot p;
+  p.name = "Cifar10 test load";
+  p.files.emplace_back(plot::plot_image(path));
+  p.show();
 
   
   return 0;
