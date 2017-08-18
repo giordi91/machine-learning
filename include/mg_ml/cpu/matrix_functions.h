@@ -81,6 +81,20 @@ void matrix_sub(const Matrix<T> &m1, const Matrix<T> &m2, Matrix<T> &out)
     o[i] = d1[i] - d2[i];
 }
 
+template <typename T>
+void matrix_sub_in_place(Matrix<T> &m1, const Matrix<T> &m2)
+{
+
+  assert(m1.size_x == m2.size_x);
+  assert(m1.size_y == m2.size_y);
+  uint32_t total_size = m1.total_size();
+
+  float *const d1 = m1.data;
+  const float *const d2 = m2.data;
+  for (uint32_t i = 0; i < total_size; ++i)
+    d1[i] = d1[i] - d2[i];
+}
+
 template <typename T, bool INVERT>
 void matrix_sub_scalar(const Matrix<T> &in, T scalar, Matrix<T> &out) {
   uint32_t total_size = in.total_size();
