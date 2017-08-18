@@ -13,18 +13,33 @@ using core::cpu::matrix_mult;
 using core::cpu::matrix_log;
 using core::cpu::matrix_log_inplace;
 using core::cpu::matrix_sub_one;
+using core::cpu::matrix_sub;
+using core::cpu::matrix_transpose;
+using core::cpu::matrix_mult_scalar_inplace;
+using core::cpu::vector_sub;
 
 template<typename T>
 void simple_logistic_forward( const Matrix<T>& X, const Matrix<T>& W, Matrix<T>& out)
 {
-    core::cpu::matrix_mult_transpose<T>(X,W,out);
+    matrix_mult_transpose<T>(X,W,out);
     sigmoid_inplace<T>(out);
 }
 
-//template<typename T>
-//void simple_logistic_backwards( const Matrix<T>& X, const Matrix<T>& W, Matrix<T>& out)
-//{
-//}
+template<typename T>
+void simple_logistic_backwards( const Matrix<T>& X, const Matrix<T>& A, const Matrix<T>& Y, Matrix<T>& grad)
+{
+
+    //std::vector<T> A_minus_Y(Y.total_size());
+    Matrix<T>A_minus_Ym{A_minus_Y.data(), Y.size_x, Y.size_y};
+    //here we exploit the fact that A and Y are vectors, so doesnt matter if they are
+    //colum or row, we access data in the way we need it so we perform the sub, 
+    //in doing so, then the vector is ready to be multiplied by X
+    vector_sub(A, Y, A_minus_Ym);
+
+    //possible transpose here happening
+    matrix_mult<T>(A_minus_Ym, X, grad);
+    matrix_mult_scalar_inplace(grad,(1.0f/float(X.size_x)));
+}
 
 template<typename T>
 T logistic_cost( const Matrix<T>& in, const Matrix<T>& Y)
@@ -52,14 +67,6 @@ T logistic_cost( const Matrix<T>& in, const Matrix<T>& Y)
   matrix_mult<T>(y_sub_m, logM,out2M);
   //ready to return
   return (- static_cast<T>(1.0f)/in.size_x) * (out1 + out2);
-
-
-  
-  
-
-  //now that we have the log we can start computing our result
-
-  return 0.0f;
 }
 } // end namespace cpu
 } // end namespace models 

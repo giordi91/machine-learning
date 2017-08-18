@@ -164,7 +164,11 @@ void matrix_mult_scalar_inplace(Matrix<T> &m, T scalar)
 }
 
 
-// std::ostream &operator<<(std::ostream &stream, const Matrix<T> &matrix);
+template<typename T>
+std::ostream &operator<<(std::ostream &stream, const Matrix<T> &matrix)
+{
+    stream<<matrix.size_x<<" "<<matrix.size_y;
+}
 
 template <typename T> void matrix_log(const Matrix<T> &in, Matrix<T> out) {
   uint32_t total_size = in.total_size();
