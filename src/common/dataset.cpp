@@ -102,4 +102,100 @@ bool dump_image_from_cifar_10_dataset(const std::string &outpath,
     return true;
 
 }
+
+//coursera
+
+bool load_coursera_cat(const std::string &outpath, Matrix<uint8_t> &X,
+                       Matrix<uint8_t> &Y, std::vector<uint8_t> &Xstorage,
+                       std::vector<uint8_t> &Ystorage) {
+  const uint32_t IMAGE_DATA_SIZE = 64u * 64u * 3;
+  const uint32_t IMAGES_PER_FILE = 209u;
+  Xstorage.reserve(IMAGE_DATA_SIZE * IMAGES_PER_FILE);
+  Ystorage.reserve( IMAGES_PER_FILE);
+
+  //const std::string Xpath{outpath + "train_X_209_12288_v2.txt"};
+  const std::string Xpath{outpath + "train_X_209_12288.txt"};
+  const std::string Ypath{outpath + "train_Y_209_1.txt"};
+
+  //lets read X
+  
+  std::ifstream trainX(Xpath);
+  if (!trainX) 
+      return false;
+
+  std::stringstream buffer;
+  buffer << trainX.rdbuf();
+  trainX.close();
+  std::string number_as_string;
+  std::string line;
+  while (std::getline(buffer, line)) {
+    std::istringstream ss(line);
+    while (std::getline(ss, number_as_string, ' ')) {
+      Xstorage.push_back(std::stof(number_as_string));
+    }
+  }
+
+  std::ifstream trainY(Ypath);
+  if (!trainY) 
+      return false;
+
+  std::stringstream bufferY;
+  bufferY << trainY.rdbuf();
+  trainY.close();
+  while (std::getline(bufferY, number_as_string,',')) {
+    Ystorage.push_back(std::stof(number_as_string));
+  }
+  X.data = Xstorage.data();
+  X.size_x = IMAGES_PER_FILE;
+  X.size_y = IMAGE_DATA_SIZE;
+
+  Y.data = Ystorage.data();
+  Y.size_x = 1;
+  Y.size_y = IMAGES_PER_FILE;
+  return true;
+}
+
+bool dump_image_from_coursera_cat_dataset(const std::string &outpath,
+                                      Matrix<uint8_t> &data, uint32_t index)
+{
+    
+    std::ofstream out_file;
+    out_file.open(outpath, std::ios::out);
+    if (!out_file) {
+      return false;
+    }
+    //
+    //size of the picture is the colum count of the matrix, since each row is a full
+    //picture, the data is first all the r, then all the g then all the b, so if
+    // we divide by 3 we get the total number of pixels, taking squre root since
+    // image from cifar 10 is squared
+    uint32_t pic_size = sqrt(std::floor((data.size_y/3.0))); 
+    uint32_t pic_size_sq = pic_size * pic_size ;
+    //shifting the pointer of the image by how many images we wish to skip
+    const uint8_t* ptr= data.data + data.size_y*index ;
+
+    for (uint32_t r = 0; r < pic_size; ++r) {
+      for (uint32_t c = 0; c < pic_size; ++c) {
+          //adding pixel coordinate
+          //coordinate of the pixel, needed to do some permutation in order 
+          //for the picture to show oriented correctly
+          out_file<<std::to_string(c)<<" "<<std::to_string(64-r)<<" ";
+          //writing R color
+          uint32_t pix_pos = r*(pic_size*3)+c*3;
+          out_file<<std::to_string(int(ptr[pix_pos]))<<" ";
+          //writing G color
+          //offsetting one size of the image
+          out_file<<std::to_string(int(ptr[pix_pos +1]))<<" ";
+          //writing B color
+          //here we offset twice the sice of the image
+          out_file<<std::to_string(int(ptr[pix_pos +2]))<<"\n";
+      }
+      //each row needs to be separated by blank line
+      out_file<<"\n";
+    }
+    out_file.close();
+    return true;
+
+}
+
 }// end namespace dataset

@@ -28,4 +28,12 @@ bool load_cifar_10(const std::string &rootpath, Matrix<uint8_t> &X, Matrix<uint8
 bool dump_image_from_cifar_10_dataset(const std::string &outpath,
                                       Matrix<uint8_t> &data, uint32_t index);
 
+//coursera
+bool load_coursera_cat(const std::string &outpath, Matrix<uint8_t> &X,
+                      Matrix<uint8_t> &Y, std::vector<uint8_t> &Xstorage,
+                      std::vector<uint8_t> &Ystorage);
+
+bool dump_image_from_coursera_cat_dataset(const std::string &outpath,
+                                      Matrix<uint8_t> &data, uint32_t index);
+
 } // end namespace dataset
