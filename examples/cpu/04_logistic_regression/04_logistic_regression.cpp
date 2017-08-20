@@ -33,6 +33,14 @@ int main()
   plot::GnuPlot p;
   p.name = "Cat test load";
   p.files.emplace_back(plot::plot_image(path));
-  p.show();
+  //p.show();
+
+  //lets normalize the data
+  std::vector<float> Xnormsto;
+  Xnormsto.resize(X.total_size());
+  core::Matrix<float> Xnorm{Xnormsto.data(), X.size_x, X.size_y};
+  
+  dataset::normalize_image_dataset(X, Xnorm, 255.0f);
+
   return 0;
 }

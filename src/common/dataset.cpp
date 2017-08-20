@@ -1,3 +1,4 @@
+#include <cassert>
 #include <cmath>
 #include <fstream>
 #include <iostream>
@@ -120,8 +121,9 @@ bool load_coursera_cat(const std::string &outpath, Matrix<uint8_t> &X,
   //lets read X
   
   std::ifstream trainX(Xpath);
-  if (!trainX) 
-      return false;
+  if (!trainX) {
+    return false;
+  }
 
   std::stringstream buffer;
   buffer << trainX.rdbuf();
@@ -136,8 +138,9 @@ bool load_coursera_cat(const std::string &outpath, Matrix<uint8_t> &X,
   }
 
   std::ifstream trainY(Ypath);
-  if (!trainY) 
-      return false;
+  if (!trainY) {
+    return false;
+  }
 
   std::stringstream bufferY;
   bufferY << trainY.rdbuf();
@@ -170,7 +173,6 @@ bool dump_image_from_coursera_cat_dataset(const std::string &outpath,
     // we divide by 3 we get the total number of pixels, taking squre root since
     // image from cifar 10 is squared
     uint32_t pic_size = sqrt(std::floor((data.size_y/3.0))); 
-    uint32_t pic_size_sq = pic_size * pic_size ;
     //shifting the pointer of the image by how many images we wish to skip
     const uint8_t* ptr= data.data + data.size_y*index ;
 
@@ -196,6 +198,23 @@ bool dump_image_from_coursera_cat_dataset(const std::string &outpath,
     out_file.close();
     return true;
 
+}
+
+void normalize_image_dataset( Matrix<uint8_t> &data, Matrix<float> &dataout, float norm_value)
+{
+
+  assert(data.size_x == dataout.size_x);
+  assert(data.size_y == dataout.size_y);
+  float inv_norm = 1.0f / norm_value;
+  uint32_t total_size = data.total_size();
+
+  const uint8_t* const  inp = data.data;
+  float* const  op = dataout.data;
+
+  for(uint32_t i = 0; i <total_size; ++i)
+  {
+      op[i] = inv_norm * static_cast<float>(inp[i]);
+  }
 }
 
 }// end namespace dataset

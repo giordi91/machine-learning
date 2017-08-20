@@ -36,4 +36,7 @@ bool load_coursera_cat(const std::string &outpath, Matrix<uint8_t> &X,
 bool dump_image_from_coursera_cat_dataset(const std::string &outpath,
                                       Matrix<uint8_t> &data, uint32_t index);
 
+void normalize_image_dataset(Matrix<uint8_t> &data, Matrix<float> &dataout,
+                             float norm_value);
+
 } // end namespace dataset

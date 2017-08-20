@@ -3,6 +3,7 @@
 #include <cmath>
 #include <cstdint>
 #include <iostream>
+#include <random>
 #include <vector>
 
 #include <mg_ml/common/matrix.h>
@@ -200,6 +201,26 @@ template <typename T> void matrix_log_inplace(Matrix<T> &m) {
     ptr[i] = log(ptr[i]);
 }
 
+template <typename T> void initialize_to_zeros(Matrix<T> &m)
+{
+  uint32_t total_size = m.total_size();
+  T*const ptr = m.data;
+  for (uint32_t i = 0; i < total_size; ++i)
+    ptr[i] = static_cast<T>(0);
+}
+
+template <typename T>
+void initialize_to_rand_in_range(Matrix<T> &m, float min, float max,
+                                 int seed = 0) {
+  std::mt19937 mt(seed);
+  std::uniform_real_distribution<T> dist(min, max);
+
+  uint32_t total_size = m.total_size();
+  T *const ptr = m.data;
+  for (uint32_t i = 0; i < total_size; ++i)
+    ptr[i] = dist(mt);
+  ;
+}
 } // end namespace cpu
 } // end namespace core
 
