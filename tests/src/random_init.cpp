@@ -13,6 +13,4 @@ TEST(random_init, init_in_range) {
     ASSERT_LE(ptr[i], 0.5f);
     ASSERT_GE(ptr[i], -0.5f);
   }
-  //ASSERT_NEAR(outm.data[0], 0.5f, 0.0000001);
-  //ASSERT_NEAR(outm.data[1], 0.88079708f, 0.00001);
 }
