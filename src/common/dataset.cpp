@@ -108,10 +108,10 @@ bool dump_image_from_cifar_10_dataset(const std::string &outpath,
 
 bool load_coursera_cat(const std::string &outpath, Matrix<uint8_t> &X,
                        Matrix<uint8_t> &Y, std::vector<uint8_t> &Xstorage,
-                       std::vector<uint8_t> &Ystorage) {
+                       std::vector<uint8_t> &Ystorage, bool add_bias) {
   const uint32_t IMAGE_DATA_SIZE = 64u * 64u * 3;
   const uint32_t IMAGES_PER_FILE = 209u;
-  Xstorage.reserve(IMAGE_DATA_SIZE * IMAGES_PER_FILE);
+  Xstorage.reserve(IMAGE_DATA_SIZE * IMAGES_PER_FILE + 209*add_bias);
   Ystorage.reserve( IMAGES_PER_FILE);
 
   //const std::string Xpath{outpath + "train_X_209_12288_v2.txt"};
@@ -125,18 +125,33 @@ bool load_coursera_cat(const std::string &outpath, Matrix<uint8_t> &X,
     return false;
   }
 
+  //loading X
   std::stringstream buffer;
   buffer << trainX.rdbuf();
   trainX.close();
   std::string number_as_string;
   std::string line;
-  while (std::getline(buffer, line)) {
-    std::istringstream ss(line);
-    while (std::getline(ss, number_as_string, ' ')) {
-      Xstorage.push_back(std::stof(number_as_string));
+  if (!add_bias) {
+    while (std::getline(buffer, line)) {
+      std::istringstream ss(line);
+      while (std::getline(ss, number_as_string, ' ')) {
+        Xstorage.push_back(std::stof(number_as_string));
+      }
     }
   }
-
+  else
+  {
+    while (std::getline(buffer, line)) {
+      std::istringstream ss(line);
+      //adding 1 for bias, since the data will be normalized we 
+      //will add 255 which normalized is 1
+      Xstorage.push_back(255); 
+      while (std::getline(ss, number_as_string, ' ')) {
+        Xstorage.push_back(std::stof(number_as_string));
+      }
+    }
+  
+  }
   std::ifstream trainY(Ypath);
   if (!trainY) {
     return false;
@@ -150,11 +165,11 @@ bool load_coursera_cat(const std::string &outpath, Matrix<uint8_t> &X,
   }
   X.data = Xstorage.data();
   X.size_x = IMAGES_PER_FILE;
-  X.size_y = IMAGE_DATA_SIZE;
-
+  X.size_y = add_bias ? IMAGE_DATA_SIZE+1 : IMAGE_DATA_SIZE;
   Y.data = Ystorage.data();
   Y.size_x = 1;
   Y.size_y = IMAGES_PER_FILE;
+  std::cout<<Xstorage.size()<<std::endl;
   return true;
 }
 
@@ -168,8 +183,10 @@ bool dump_image_from_coursera_cat_dataset(const std::string &outpath,
       return false;
     }
     //
-    //size of the picture is the colum count of the matrix, since each row is a full
-    //picture, the data is first all the r, then all the g then all the b, so if
+    // size of the picture is the colum count of the matrix, since each row is a
+    // full
+    // picture, the data is first all the r, then all the g then all the b, so
+    // if
     // we divide by 3 we get the total number of pixels, taking squre root since
     // image from cifar 10 is squared
     uint32_t pic_size = sqrt(std::floor((data.size_y/3.0))); 
@@ -200,20 +217,18 @@ bool dump_image_from_coursera_cat_dataset(const std::string &outpath,
 
 }
 
-void normalize_image_dataset( Matrix<uint8_t> &data, Matrix<float> &dataout, float norm_value)
-{
-
+void normalize_image_dataset(Matrix<uint8_t> &data, Matrix<float> &dataout,
+                             float norm_value) {
   assert(data.size_x == dataout.size_x);
   assert(data.size_y == dataout.size_y);
   float inv_norm = 1.0f / norm_value;
   uint32_t total_size = data.total_size();
 
-  const uint8_t* const  inp = data.data;
-  float* const  op = dataout.data;
+  const uint8_t *const inp = data.data;
+  float *const op = dataout.data;
 
-  for(uint32_t i = 0; i <total_size; ++i)
-  {
-      op[i] = inv_norm * static_cast<float>(inp[i]);
+  for (uint32_t i = 0; i < total_size; ++i) {
+    op[i] = inv_norm * static_cast<float>(inp[i]);
   }
 }
 

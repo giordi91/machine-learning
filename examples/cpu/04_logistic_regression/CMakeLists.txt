@@ -13,7 +13,7 @@ project(04_logistic_regression)
 	if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 	     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  /std:c++14 /W4 /arch:AVX2 /fp:fast")
 	else()
-	     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -pedantic -Wextra -m64 -mavx2 -mfma -ffast-math")
+	     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -std=c++14 -Wall -pedantic -Wextra -m64 -mavx2 -mfma -ffast-math")
     endif()
 
 	#adding the executable

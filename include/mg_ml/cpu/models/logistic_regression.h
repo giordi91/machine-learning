@@ -1,12 +1,13 @@
 #pragma once
 
-#include <mg_ml/cpu/models/activation_functions.h>
-
 #include <mg_ml/common/matrix.h>
+#include <mg_ml/cpu/matrix_functions.h>
+#include <mg_ml/cpu/models/activation_functions.h>
 
 namespace models {
 namespace cpu {
 
+using core::Matrix;
 using core::cpu::matrix_mult_transpose;
 using core::cpu::matrix_mult;
 using core::cpu::matrix_log;
@@ -82,6 +83,34 @@ template <typename T> T logistic_cost(const Matrix<T> &in, const Matrix<T> &Y) {
   // ready to return
   return (-static_cast<T>(1.0f) / in.size_x) * (out1 + out2);
 }
+
+template<typename T>
+void simple_logistic_model(const Matrix<T>&X, const Matrix<T>&Y, uint32_t iter,
+        float learning_rate)
+{
+    //initializing the weights
+    std::vector<float> Wstorage(X.size_y);
+    Matrix<float> Wm{Wstorage.data(), 1, X.size_y};
+    core::cpu::initialize_to_zeros(Wm);
+
+    std::vector<T> outStorage(X.size_x * Wm.size_x);
+    Matrix<T> out{outStorage.data(), X.size_x, Wm.size_x};
+    std::vector<T> gradStorage(Wm.total_size());
+    Matrix<T> grad{gradStorage.data(),  Wm.size_x, Wm.size_y};
+
+    for (uint32_t i = 0; i < iter; ++i) {
+
+      simple_logistic_forward(X, Wm, out);
+      simple_logistic_backwards(X, out, Y, grad);
+      simple_logistic_apply_grad(Wm, grad, learning_rate);
+
+      if (i % 100 == 0) {
+        float cost = logistic_cost(out, Y);
+        std::cout << "cost after " << i << " iterations: " << cost << std::endl;
+      }
+    }
+}
+
 
 } // end namespace cpu
 } // end namespace models
