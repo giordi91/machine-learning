@@ -10,6 +10,8 @@ int main()
 
   // loading dataset
 
+  std::cout<<"========================================================"<<std::endl;
+  std::cout<<"loading train data"<<std::endl;
   const std::string rootpath{"tests/datasets/coursera/cat/"};
   core::Matrix<uint8_t> X;
   core::Matrix<uint8_t> Y;
@@ -35,6 +37,8 @@ int main()
   p.files.emplace_back(plot::plot_image(path));
   //p.show();
 
+  std::cout<<"========================================================"<<std::endl;
+  std::cout<<"training ... "<<std::endl;
   //lets normalize the data
   std::vector<float> Xnormsto;
   Xnormsto.resize(X.total_size());
@@ -50,7 +54,7 @@ int main()
   float learning_rate = 0.005;
   uint32_t iterations = 2000;
   
-//initializing the weights
+  //initializing the weights
   std::vector<float> Wstorage(X.size_y);
   core::Matrix<float> Wm{Wstorage.data(), 1, X.size_y};
   core::cpu::initialize_to_zeros(Wm);
@@ -60,21 +64,19 @@ int main()
   Ypredict.resize(X.total_size());
   core::Matrix<float> YpredictM{Ypredict.data(), Y.size_x, Y.size_y};
 
-  models::cpu::logistic_model_predict(Xnorm, Wm, Ynorm, YpredictM);
-  uint32_t total_size = YpredictM.total_size();
-  float counter =0.0f;
-  for (uint32_t i = 0; i < total_size; ++i) {
-    counter += YpredictM.data[i];
-  }
+  float train_acc=0.0f; 
+  train_acc = models::cpu::logistic_model_predict(Xnorm, Wm, Ynorm, YpredictM);
+  std::cout << "accuracy of the training set is " << train_acc << "%"
+            << std::endl;
 
-  std::cout<<"accuracy of the training set is "<<(counter/(float)X.size_x)*100.0f<<std::endl;
-    
   //testing against cross validation test
   core::Matrix<uint8_t> Xtest;
   core::Matrix<uint8_t> Ytest;
   std::vector<uint8_t> Xteststo;
   std::vector<uint8_t> Yteststo;
 
+  std::cout<<"========================================================"<<std::endl;
+  std::cout<<"loading test data "<<std::endl;
   res = dataset::load_coursera_cat(rootpath, Xtest, Ytest, Xteststo, Yteststo, true, true);
   if (!res) {
     std::cout << "ERROR, could not open coursera test cat at path: " << rootpath
@@ -100,15 +102,10 @@ int main()
   std::vector<float> Ypredicttest;
   Ypredicttest.resize(Xtest.total_size());
   core::Matrix<float> YpredicttestM{Ypredicttest.data(), Ytest.size_x, Ytest.size_y};
-  models::cpu::logistic_model_predict(Xtestnorm, Wm, Ytestnorm, YpredicttestM);
-  total_size = YpredicttestM.total_size();
-  counter =0.0f;
-  for (uint32_t i = 0; i < total_size; ++i) {
-    counter += YpredicttestM.data[i];
-  }
+  float test_acc=0.0f; 
+  test_acc = models::cpu::logistic_model_predict(Xtestnorm, Wm, Ytestnorm, YpredicttestM);
 
-  std::cout<<Xtest.size_x<<std::endl;
-  std::cout<<"accuracy of the test set is "<<(counter/(float)Xtest.size_x)*100.0f<<std::endl;
+  std::cout << "accuracy of the test set is " << test_acc <<"%"<< std::endl;
 
   return 0;
 }

@@ -48,7 +48,7 @@ void simple_logistic_backwards(const Matrix<T> &X, const Matrix<T> &A,
 
   // possible transpose here happening
   matrix_mult<T>(A_minus_Ym, X, grad);
-  matrix_mult_scalar_inplace(grad, (1.0f / float(X.size_x)));
+  matrix_mult_scalar_inplace(grad, (1.0f / static_cast<float>(X.size_x)));
 }
 
 template <typename T>
@@ -108,7 +108,7 @@ void simple_logistic_model(const Matrix<T> &X, Matrix<T> &Wm,
 }
 
 template <typename T>
-void logistic_model_predict(const Matrix<T> &X, const Matrix<T> &Wm,
+float logistic_model_predict(const Matrix<T> &X, const Matrix<T> &Wm,
                             const Matrix<T> &Y, Matrix<T> &out) {
   static const float EPSILON = 0.0001f;
   std::vector<T> activationStorage(X.size_x * Wm.size_x);
@@ -121,13 +121,15 @@ void logistic_model_predict(const Matrix<T> &X, const Matrix<T> &Wm,
   const T* const actptr = activationm.data;
   const T* const yptr = Y.data;
   T* const outptr = out.data;
+  float counter =0.0f;
   for(uint32_t t =0; t<total_size; ++t)
   {
     T afterClamp = actptr[t] > 0.5f ? 1.0f : 0.0f;
     outptr[t] = fabs(afterClamp - yptr[t]) < EPSILON ? static_cast<T>(1)
                                                      : static_cast<T>(0);
+    counter += static_cast<float>(outptr[t]);
   }
-
+  return (counter /static_cast<float>(total_size) *100.0f);
 
 }
 
