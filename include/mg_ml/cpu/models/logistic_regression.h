@@ -84,33 +84,52 @@ template <typename T> T logistic_cost(const Matrix<T> &in, const Matrix<T> &Y) {
   return (-static_cast<T>(1.0f) / in.size_x) * (out1 + out2);
 }
 
-template<typename T>
-void simple_logistic_model(const Matrix<T>&X, const Matrix<T>&Y, uint32_t iter,
-        float learning_rate)
-{
-    //initializing the weights
-    std::vector<float> Wstorage(X.size_y);
-    Matrix<float> Wm{Wstorage.data(), 1, X.size_y};
-    core::cpu::initialize_to_zeros(Wm);
+template <typename T>
+void simple_logistic_model(const Matrix<T> &X, Matrix<T> &Wm,
+                           const Matrix<T> &Y, uint32_t iter,
+                           float learning_rate) {
 
-    std::vector<T> outStorage(X.size_x * Wm.size_x);
-    Matrix<T> out{outStorage.data(), X.size_x, Wm.size_x};
-    std::vector<T> gradStorage(Wm.total_size());
-    Matrix<T> grad{gradStorage.data(),  Wm.size_x, Wm.size_y};
+  std::vector<T> outStorage(X.size_x * Wm.size_x);
+  Matrix<T> out{outStorage.data(), X.size_x, Wm.size_x};
+  std::vector<T> gradStorage(Wm.total_size());
+  Matrix<T> grad{gradStorage.data(), Wm.size_x, Wm.size_y};
 
-    for (uint32_t i = 0; i < iter; ++i) {
+  for (uint32_t i = 0; i < iter; ++i) {
 
-      simple_logistic_forward(X, Wm, out);
-      simple_logistic_backwards(X, out, Y, grad);
-      simple_logistic_apply_grad(Wm, grad, learning_rate);
+    simple_logistic_forward(X, Wm, out);
+    simple_logistic_backwards(X, out, Y, grad);
+    simple_logistic_apply_grad(Wm, grad, learning_rate);
 
-      if (i % 100 == 0) {
-        float cost = logistic_cost(out, Y);
-        std::cout << "cost after " << i << " iterations: " << cost << std::endl;
-      }
+    if (i % 100 == 0) {
+      float cost = logistic_cost(out, Y);
+      std::cout << "cost after " << i << " iterations: " << cost << std::endl;
     }
+  }
 }
 
+template <typename T>
+void logistic_model_predict(const Matrix<T> &X, const Matrix<T> &Wm,
+                            const Matrix<T> &Y, Matrix<T> &out) {
+  static const float EPSILON = 0.0001f;
+  std::vector<T> activationStorage(X.size_x * Wm.size_x);
+  Matrix<T> activationm{activationStorage.data(), X.size_x, Wm.size_x};
+
+  simple_logistic_forward(X, Wm, activationm);
+  uint32_t total_size = activationm.total_size();
+  assert(total_size == Y.total_size());
+
+  const T* const actptr = activationm.data;
+  const T* const yptr = Y.data;
+  T* const outptr = out.data;
+  for(uint32_t t =0; t<total_size; ++t)
+  {
+    T afterClamp = actptr[t] > 0.5f ? 1.0f : 0.0f;
+    outptr[t] = fabs(afterClamp - yptr[t]) < EPSILON ? static_cast<T>(1)
+                                                     : static_cast<T>(0);
+  }
+
+
+}
 
 } // end namespace cpu
 } // end namespace models

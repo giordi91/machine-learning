@@ -43,4 +43,5 @@ TEST(logistic_regression, simple_eval) {
   ASSERT_NEAR(gradm.data[2], 1.99980262, 0.00001);
 
   models::cpu::simple_logistic_apply_grad(wm, gradm, 0.01);
+
 }

@@ -30,11 +30,13 @@ bool dump_image_from_cifar_10_dataset(const std::string &outpath,
 
 //coursera
 bool load_coursera_cat(const std::string &outpath, Matrix<uint8_t> &X,
-                      Matrix<uint8_t> &Y, std::vector<uint8_t> &Xstorage,
-                      std::vector<uint8_t> &Ystorage, bool add_bias);
+                       Matrix<uint8_t> &Y, std::vector<uint8_t> &Xstorage,
+                       std::vector<uint8_t> &Ystorage, bool add_bias,
+                       bool load_validation = false);
 
 bool dump_image_from_coursera_cat_dataset(const std::string &outpath,
                                       Matrix<uint8_t> &data, uint32_t index);
+
 
 void normalize_image_dataset(Matrix<uint8_t> &data, Matrix<float> &dataout,
                              float norm_value);

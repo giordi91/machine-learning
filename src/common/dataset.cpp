@@ -108,15 +108,24 @@ bool dump_image_from_cifar_10_dataset(const std::string &outpath,
 
 bool load_coursera_cat(const std::string &outpath, Matrix<uint8_t> &X,
                        Matrix<uint8_t> &Y, std::vector<uint8_t> &Xstorage,
-                       std::vector<uint8_t> &Ystorage, bool add_bias) {
+                       std::vector<uint8_t> &Ystorage, bool add_bias, bool load_validation) {
   const uint32_t IMAGE_DATA_SIZE = 64u * 64u * 3;
-  const uint32_t IMAGES_PER_FILE = 209u;
-  Xstorage.reserve(IMAGE_DATA_SIZE * IMAGES_PER_FILE + 209*add_bias);
+  uint32_t IMAGES_PER_FILE = 209u;
+  if (load_validation) {
+    IMAGES_PER_FILE = 50;
+  }
+
+  Xstorage.reserve(IMAGE_DATA_SIZE * IMAGES_PER_FILE +
+                   IMAGES_PER_FILE * static_cast<uint32_t>(add_bias));
   Ystorage.reserve( IMAGES_PER_FILE);
 
   //const std::string Xpath{outpath + "train_X_209_12288_v2.txt"};
-  const std::string Xpath{outpath + "train_X_209_12288.txt"};
-  const std::string Ypath{outpath + "train_Y_209_1.txt"};
+  std::string Xpath{outpath + "train_X_209_12288.txt"};
+  std::string Ypath{outpath + "train_Y_209_1.txt"};
+  if (load_validation) {
+    Xpath = outpath + "test_X_50_12288.txt";
+    Ypath = outpath + "test_Y_50_1.txt";
+  }
 
   //lets read X
   
@@ -169,9 +178,9 @@ bool load_coursera_cat(const std::string &outpath, Matrix<uint8_t> &X,
   Y.data = Ystorage.data();
   Y.size_x = 1;
   Y.size_y = IMAGES_PER_FILE;
-  std::cout<<Xstorage.size()<<std::endl;
   return true;
 }
+
 
 bool dump_image_from_coursera_cat_dataset(const std::string &outpath,
                                       Matrix<uint8_t> &data, uint32_t index)
