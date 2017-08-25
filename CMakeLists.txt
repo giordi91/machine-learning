@@ -27,14 +27,17 @@ option(BUILD_EXAMPLES "Wheter or not to build the examples" ON)
 #check the compiler
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   # using Clang
+  set(COMMON_CXX_FLAGS "${COMMON_CXX_FLAGS} -O3 -std=c++14 -Wall -pedantic -Wextra -m64 -mavx2 -mfma -ffast-math")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   # using GCC
+  set(COMMON_CXX_FLAGS "${COMMON_CXX_FLAGS} -O3 -std=c++14 -Wall -pedantic -Wextra -m64 -mavx2 -mfma -ffast-math")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
   # using Intel C++
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   # using Visual Studio C++
   #disabling build of kernel assembly for the time being
-  SET(DUMP_KERNEL_ASSEMBLY OFF CACHE BOOL "Wheter or not to generate readable assembly code from kernels" FORCE)
+  set(DUMP_KERNEL_ASSEMBLY OFF CACHE BOOL "Wheter or not to generate readable assembly code from kernels" FORCE)
+  set(COMMON_CXX_FLAGS "${COMMON_CXX_FLAGS}  /std:c++14 /W4 /arch:AVX2 /fp:fast")
 endif()
 
 

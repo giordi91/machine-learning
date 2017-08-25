@@ -10,11 +10,7 @@ project(03_load_cifar_10)
     include_directories(${CMAKE_SOURCE_DIR}/include )
 	
 	#defining standard compiling flags
-	if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-	     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  /std:c++14 /W4 /arch:AVX2 /fp:fast")
-	else()
-	     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -pedantic -Wextra -m64 -mavx2 -mfma -ffast-math")
-    endif()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON_CXX_FLAGS}")
 
 	#adding the executable
     add_executable(${PROJECT_NAME}  ${SOURCE_FILES})
