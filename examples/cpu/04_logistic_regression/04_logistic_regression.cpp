@@ -4,7 +4,7 @@
 #include <mg_ml/common/matrix.h>
 #include <mg_ml/common/plotting.h>
 #include <mg_ml/cpu/models/logistic_regression.h>
-
+#include <random>
 int main()
 {
 

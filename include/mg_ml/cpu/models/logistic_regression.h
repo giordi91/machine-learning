@@ -26,7 +26,6 @@ using core::cpu::matrix_sub_in_place;
 // since that assumption is used for simplifying some of the computation and
 // avoid
 // transposition
-
 template <typename T>
 void simple_logistic_forward(const Matrix<T> &X, const Matrix<T> &W,
                              Matrix<T> &out) {

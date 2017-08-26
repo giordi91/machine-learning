@@ -41,4 +41,7 @@ bool dump_image_from_coursera_cat_dataset(const std::string &outpath,
 void normalize_image_dataset(Matrix<uint8_t> &data, Matrix<float> &dataout,
                              float norm_value);
 
+bool load_space_separated_dataset(const std::string &path, Matrix<float> &m,
+                                  std::vector<float> mstorage, bool add_bias,
+                                  float bias_value); 
 } // end namespace dataset

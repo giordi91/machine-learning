@@ -181,7 +181,6 @@ bool load_coursera_cat(const std::string &outpath, Matrix<uint8_t> &X,
   return true;
 }
 
-
 bool dump_image_from_coursera_cat_dataset(const std::string &outpath,
                                       Matrix<uint8_t> &data, uint32_t index)
 {
@@ -241,4 +240,42 @@ void normalize_image_dataset(Matrix<uint8_t> &data, Matrix<float> &dataout,
   }
 }
 
-}// end namespace dataset
+bool load_space_separated_dataset(const std::string &path, Matrix<float> &m,
+                                  std::vector<float> mstorage, bool add_bias,
+                                  float bias_value) {
+
+  mstorage.reserve(m.total_size());
+
+  // lets read X
+  std::ifstream dataStream(path);
+  if (!dataStream) {
+    return false;
+  }
+
+  // loading X
+  std::stringstream buffer;
+  buffer << dataStream.rdbuf();
+  dataStream.close();
+  std::string number_as_string;
+  std::string line;
+  if (!add_bias) {
+    while (std::getline(buffer, line)) {
+      std::istringstream ss(line);
+      while (std::getline(ss, number_as_string, ' ')) {
+        mstorage.push_back(std::stof(number_as_string));
+      }
+    }
+  } else {
+    while (std::getline(buffer, line)) {
+      std::istringstream ss(line);
+      // adding bias
+      mstorage.push_back(bias_value);
+      while (std::getline(ss, number_as_string, ' ')) {
+        mstorage.push_back(std::stof(number_as_string));
+      }
+    }
+  }
+
+  assert(mstorage.size() == m.total_size());
+}
+} // end namespace dataset
