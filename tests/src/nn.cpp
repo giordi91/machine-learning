@@ -32,6 +32,11 @@ TEST(nn, naive) {
   std::vector<float>biases_storage; 
   std::vector<core::Matrix<float>> W_layers;
   std::vector<core::Matrix<float>> biases;
+
+  std::vector<core::Matrix<float>> activation_caches;
+  std::vector<core::Matrix<float>> z_caches;
+  std::vector<float>activation_storage; 
+  std::vector<float>z_storage; 
   
   //initializing layers
   models::cpu::initialize_layers_with_random_weights<float>(
@@ -62,5 +67,20 @@ TEST(nn, naive) {
 
   ASSERT_EQ(biases[0].data,biases_storage.data());
   ASSERT_EQ(biases[1].data,biases_storage.data()+4);
+  
+  //allocating caches
+  ASSERT_EQ(biases[0].data,biases_storage.data());
+
+  models::cpu::nn_allocate_caches(X, W_layers, activation_caches, z_caches,
+                                  activation_storage, z_storage);
+  ASSERT_EQ(activation_storage.size(), 15);
+  ASSERT_EQ(z_storage.size(), 15);
+
+  //lets check the caches sizes
+  ASSERT_EQ(activation_caches[0].size_x, 3);
+  ASSERT_EQ(activation_caches[0].size_y, 4);
+  
+  ASSERT_EQ(activation_caches[1].size_x, 3);
+  ASSERT_EQ(activation_caches[1].size_y, 1);
 
 }

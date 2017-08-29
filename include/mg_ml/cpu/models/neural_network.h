@@ -38,9 +38,9 @@ void initialize_matrix_with_random_weights_0_mean_1_sd(
 template <typename T>
 void initialize_layers_with_random_weights(std::vector<uint32_t> &layers_size,
                                            std::vector<Matrix<T>> &layers,
-                                           std::vector<T> &layers_storage, 
-                                           std::vector<Matrix<T>>& biases,
-                                           std::vector<T>&biases_storage) {
+                                           std::vector<T> &layers_storage,
+                                           std::vector<Matrix<T>> &biases,
+                                           std::vector<T> &biases_storage) {
 
   // compute total layer size
   uint32_t total_size = 0;
@@ -72,7 +72,51 @@ void initialize_layers_with_random_weights(std::vector<uint32_t> &layers_size,
   }
 }
 
+template <typename T>
+void nn_allocate_caches(Matrix<T> &X, std::vector < Matrix<T>> & layers,
+                        std::vector<Matrix<T>> &activation_caches,
+                        std::vector<Matrix<T>> &z_caches,
+                        std::vector<T> &activation_storage,
+                        std::vector<T> &z_storage)
+{
+    uint32_t total_size = 0;
+    uint32_t layers_size = layers.size();
+    for(uint32_t i=0; i<layers_size; ++i)
+    {
+        //here we loop the layers and compute how much each layer each cache is gonna 
+        //use, the matrix is going to be the result for the number of examples we are training
+        //for (aka X.size_x) and the current layer size (aka layers[i].size_x)
+        total_size+= (X.size_x * layers[i].size_x);
+    }
+    //allocating the memory for both storage and activation
+    activation_storage.resize(total_size);
+    z_storage.resize(total_size);
 
+    uint32_t offset=0;
+    for(uint32_t i=0; i<layers_size; ++i)
+    {
+      //here we generate the matrices, we need to shift the pointer 
+      //for each layer
+      activation_caches.emplace_back(Matrix<T>{
+          activation_storage.data() + offset, X.size_x, layers[i].size_x});
+
+      z_caches.emplace_back(Matrix<T>{
+          z_storage.data() + offset, X.size_x, layers[i].size_x});
+
+      //adding the current layer size to the offset
+      offset += (X.size_x * layers[i].size_x);
+
+    }
+
+}
+
+//template <typename T>
+//void nn_forward_propagation(Matrix<T>& X, std::vector<Matrix<T>>&layers, 
+//                            std::vector<Matrix<T>>& biases, Matrix<T>&Y)
+//{
+//    //input propagation
+//    //matrix_mult_transpose();
+//}
 
 }//end namespace cpu
 }//end namespace models
