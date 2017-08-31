@@ -33,7 +33,7 @@ TEST(logistic_regression, simple_eval) {
   ASSERT_NEAR(outm.data[0], 0.99987661, 0.00001);
   ASSERT_NEAR(outm.data[1], 0.99999386, 0.00001);
   float cost = models::cpu::logistic_cost<float>(outm, ym);
-  ASSERT_NEAR(cost, 6.000064773192205f, 0.001);
+  ASSERT_NEAR(cost, 6.000064773192205f, 0.01);
 
   // lets chack backward prop
   models::cpu::simple_logistic_backwards(xm, outm, ym, gradm);
