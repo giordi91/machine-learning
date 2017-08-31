@@ -10,9 +10,14 @@ project(tests)
 	#defining standard compiling flags
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON_CXX_FLAGS}")
 
+    if(NOT WIN_32)
+     set(PTHREAD_LIB "-lpthread")
+    endif()
+    
 	#adding the executable
     add_executable(${PROJECT_NAME} ${SOURCE_FILES} )
-    target_link_libraries(${PROJECT_NAME} ${MAIN_LIB_NAME} ${GTEST_BOTH_LIBRARIES} )
+    target_link_libraries(${PROJECT_NAME} ${MAIN_LIB_NAME} ${GTEST_BOTH_LIBRARIES} 
+                        ${PTHREAD_LIB})
 
 
     
